@@ -1,4 +1,5 @@
 # nibSV
+A kmer based method for detecting a panel of known SVs in new genomes.
 
 ## Please cite our work -- here is the ICMJE Standard Citation:
 
@@ -18,7 +19,7 @@ These long differences in DNA are harder to detect computationally, due to align
 
 ## Why should we solve it?
 
-Who doesnt like to nibble on SV 
+Who doesnt like to nibble on SV?
 # What is <this software>?
 
 Overview Diagram
@@ -40,6 +41,13 @@ How to make this rapid?
 Update VCF?
 
 # File structure diagram 
+## Input
+1. A Strucutural variant VCF
+2. An indexed FASTA file of the reference genome
+3. A BAM/CRAM file (new genome)
+
+**important** : Reference genome needs to match VCF
+
 #### _Define paths, variable names, etc_
 
 # Installation options:
