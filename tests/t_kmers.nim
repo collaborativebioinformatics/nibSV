@@ -1,5 +1,5 @@
 # vim: sw=4 ts=4 sts=4 tw=0 et:
-from nibsvpkg/kmers import hash # avoiding "*" imports
+from nibpkg/kmers import hash # avoiding "*" imports
 import unittest
 import deques
 import sequtils

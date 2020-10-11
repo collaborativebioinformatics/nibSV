@@ -1,5 +1,5 @@
 # vim: sw=4 ts=4 sts=4 tw=0 et:
-import nibsvpkg/util
+import nibpkg/util
 import unittest
 from strformat import fmt
 
