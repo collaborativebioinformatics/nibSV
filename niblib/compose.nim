@@ -1,12 +1,14 @@
 import hts
 
-
+type
+  FlankSeq = object
+    left, right: string
 
 proc retrieve_flanking_sequences_from_fai(fastaIdx: Fai, chrom: string,
-        start_pos, end_pos, flank: int): tuple =
+        start_pos, end_pos, flank: int) : FlankSeq  =
     ## this function lacks a return
-    var five_prime_seq = fastaIdx.get(chrom, start_pos - flank, start_pos)
-    var three_prime_seq = fastaIdx.get(chrom, end_pos, end_pos + flank)
+    result.left = fastaIdx.get(chrom, start_pos - flank, start_pos)
+    result.right = fastaIdx.get(chrom, end_pos, end_pos + flank)
 
     var flanks : tuple[five_prime : string, three_prime : string]
 
@@ -16,12 +18,12 @@ proc retrieve_flanking_sequences_from_fai(fastaIdx: Fai, chrom: string,
 
 proc compose_variants(variant_file: string, reference_file: string) =
     ## function to compose
-    
+
     ## Open FASTA index
     var fai:Fai
     if not fai.open(reference_file):
         quit ("Failed to open FASTA file: " & reference_file)
-    
+
     var variants: VCF
     doAssert(open(variants, variant_file))
 
