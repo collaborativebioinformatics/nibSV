@@ -1,4 +1,5 @@
-# nibble
+# nibSV
+A kmer based method for detecting a panel of known SVs in new genomes.
 
 ## Please cite our work -- here is the ICMJE Standard Citation:
 
@@ -11,11 +12,14 @@
 ## Website (if applicable)
 
 ## Intro statement
+Structural variation (SV) are the largest source of genetic variation within the human population. Long read DNA sequencing is becoming the preferred method for discovering structural variants. Structural variation can be longer than a short-read (<500bp) DNA trace, meaning the SV allele is not contained, which causes challanges and problems in the detection. Nevertheless, short reads are the way to go to obtain robust allele frequencies accross a population.
 
 ## What's the problem?
+These long differences in DNA are harder to detect computationally, due to alignment, and sequence context. Pacifiic Biosciences HiFi reads are long (~10-20kb) and accurate (phred QV > 20). HiFi reads have the ability to identify a wide range of SV because they encapsulate the SV length spectrum. There are a number of good software tools to detect structural variants in HiFi data: Sniffles, PBSV, and others. Using these SV calls as priors we are going to identify kmers that can be used as SV specific markers. Building a database of SV specific kmers will allow us to integrate the large number of short-read datasets.
 
 ## Why should we solve it?
 
+Who doesnt like to nibble on SV?
 # What is <this software>?
 
 Overview Diagram
@@ -23,8 +27,27 @@ Overview Diagram
 # How to use <this software>
 
 # Software Workflow Diagram
+Rough workflow  (Eric D):
+
+1. Parse a SV VCF file 
+   Reconstitute alleles (adding flank to deletions and insertions)
+   Build map/hash/set/vector of kmers that are present in SVs (SVnibs)
+2. Parse human reference genome generating another set of kmers (Brent)
+3. Remove SVnibs that are in the human reference genome. We cannot quickly type those SVs that are reference derived. This will remove many of the insertions: Alu’s lines ect. 
+4. Type. In this stage we will go through novel/new genomes and see if they contain the SVnibs. Account for frequency, and depth. 
+
+How to make this rapid?
+
+Update VCF?
 
 # File structure diagram 
+## Input
+1. A Strucutural variant VCF
+2. An indexed FASTA file of the reference genome
+3. A BAM/CRAM file (new genome)
+
+**important** : Reference genome needs to match VCF
+
 #### _Define paths, variable names, etc_
 
 # Installation options:
