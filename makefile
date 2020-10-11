@@ -1,5 +1,5 @@
-NIMBLE_DIR?=${CURDIR}/nimbleDir
-export NIMBLE_DIR
+#NIMBLE_DIR?=${CURDIR}/nimbleDir
+#export NIMBLE_DIR
 # Alternatively, use --nimbleDir:${NIMBLE_DIR} everywhere
 
 build:
