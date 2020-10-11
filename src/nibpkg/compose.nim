@@ -13,7 +13,7 @@ proc retrieve_flanking_sequences_from_fai(fastaIdx: Fai, chrom: string,
 
 
 
-proc compose_variants(variant_file: string, reference_file: string) =
+proc compose_variants*(variant_file: string, reference_file: string) =
   ## function to compose
 
   ## Open FASTA index
