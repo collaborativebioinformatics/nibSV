@@ -1,3 +1,4 @@
+import math
 import hts
 
 type
@@ -7,7 +8,7 @@ type
 proc retrieve_flanking_sequences_from_fai(fastaIdx: Fai, chrom: string,
         start_pos, end_pos, flank: int): FlankSeq =
   ## this function lacks a return
-  result.left = fastaIdx.get(chrom, start_pos - flank, start_pos)
+  result.left = fastaIdx.get(chrom, max(0, start_pos - flank), start_pos)
   result.right = fastaIdx.get(chrom, end_pos, end_pos + flank)
 
 
