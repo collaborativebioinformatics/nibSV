@@ -44,11 +44,8 @@ proc compose_variants*(variant_file: string, reference_file: string) =
   var variants: VCF
   doAssert(open(variants, variant_file))
 
-  var sv_type: string
+
   for v in variants:
-    var info_fields = v.info
-    ## Extract SV type / SV END / start position
-    doAssert info_fields.get("SVTYPE", svtype) == Status.OK
     let sv_chrom = $v.CHROM
     ## Retrieve flanks, either from FAI or string cache
     let flanks = retrieve_flanking_sequences_from_fai(fai, sv_chrom, int(
