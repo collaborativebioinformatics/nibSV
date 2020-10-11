@@ -1,4 +1,4 @@
-# nibble
+# nibSV
 
 ## Please cite our work -- here is the ICMJE Standard Citation:
 
@@ -11,13 +11,14 @@
 ## Website (if applicable)
 
 ## Intro statement
-Structural variation (SV)  is the largest source of genetic variation within the human population. DNA sequencing is becoming the preferred method for discovering structural variants. Structural variation can be longer than a short-read (<500bp) DNA trace, meaning the SV allele is not containedd.
+Structural variation (SV) are the largest source of genetic variation within the human population. Long read DNA sequencing is becoming the preferred method for discovering structural variants. Structural variation can be longer than a short-read (<500bp) DNA trace, meaning the SV allele is not contained, which causes challanges and problems in the detection. Nevertheless, short reads are the way to go to obtain robust allele frequencies accross a population.
 
 ## What's the problem?
-These long differences in DNA are harder to detect computationally, due to alignment, and sequence context. Pacifiic Biosciences HiFi reads are long (~10-20kb) and accurate (phred QV > 20). HiFi reads have the ability to identify a wide range of SV because they encapsulate the SV length spectrum. There are a number of good software tools to detect structural variants in HiFi data: Sniffles, PBSV, and others. Using these SV calls as priors we are going to identify kmers that can be used as SV specific markers. Building a database of sv specific kmers will allow us to integrate the large number of short-read datasets.
+These long differences in DNA are harder to detect computationally, due to alignment, and sequence context. Pacifiic Biosciences HiFi reads are long (~10-20kb) and accurate (phred QV > 20). HiFi reads have the ability to identify a wide range of SV because they encapsulate the SV length spectrum. There are a number of good software tools to detect structural variants in HiFi data: Sniffles, PBSV, and others. Using these SV calls as priors we are going to identify kmers that can be used as SV specific markers. Building a database of SV specific kmers will allow us to integrate the large number of short-read datasets.
 
 ## Why should we solve it?
 
+Who doesnt like to nibble on SV 
 # What is <this software>?
 
 Overview Diagram
