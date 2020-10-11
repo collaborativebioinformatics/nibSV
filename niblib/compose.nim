@@ -10,10 +10,6 @@ proc retrieve_flanking_sequences_from_fai(fastaIdx: Fai, chrom: string,
     result.left = fastaIdx.get(chrom, start_pos - flank, start_pos)
     result.right = fastaIdx.get(chrom, end_pos, end_pos + flank)
 
-    var flanks : tuple[five_prime : string, three_prime : string]
-
-    return flanks
-
 
 
 proc compose_variants(variant_file: string, reference_file: string) =
@@ -27,6 +23,9 @@ proc compose_variants(variant_file: string, reference_file: string) =
     var variants: VCF
     doAssert(open(variants, variant_file))
 
+    var sv_end : int32
+    var sv_start : int32
+    var sv_type : string
     for v in variants:
         var info_fields = v.info
         ## Extract SV type / SV END / start position
