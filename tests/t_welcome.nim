@@ -1,5 +1,5 @@
 # vim: sw=4 ts=4 sts=4 tw=0 et:
-from nibsvpkg/welcome import nil
+from nibpkg/welcome import nil
 import unittest
 
 suite "welcome":
