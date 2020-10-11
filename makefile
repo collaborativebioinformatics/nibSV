@@ -11,13 +11,13 @@ help:
 	nimble -h
 	nimble tasks
 test:
-	nimble test --debug # uses "tests/" directory by default
+	nimble test  # uses "tests/" directory by default
 integ-test:
 	@echo 'integ-test TBD'
 install:
-	#nimble install --debug -y
 	nimble install -y
 pretty:
-	find . -name '*.nim' | xargs -L1 nimpretty --indent=4
+	find src -name '*.nim' | xargs -L1 nimpretty --indent=4 --maxLineLen=1024
+	find tests -name '*.nim' | xargs -L1 nimpretty --indent=4 --maxLineLen=1024
 
 .PHONY: test
