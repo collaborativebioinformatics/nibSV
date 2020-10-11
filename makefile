@@ -6,6 +6,7 @@ all:
 	${MAKE} install
 quick:
 	nim c -r tests/t_kmers.nim
+	nim c -r tests/t_util.nim
 help:
 	nimble -h
 	nimble tasks
