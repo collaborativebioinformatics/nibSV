@@ -13,4 +13,4 @@ bin           = @["nibsv"]
 
 # Dependencies
 
-requires "nim >= 1.2.0", "hts", "kmer", "bitvector >= 0.4.10"
+requires "nim >= 1.2.0", "hts", "kmer", "bitvector >= 0.4.10", "cligen"
