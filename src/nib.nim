@@ -1,5 +1,9 @@
-from nibpkg/compose import compose_variants
+from nibpkg/compose import nil
+from nibpkg/refmers import nil
 
-if isMainModule:
+when isMainModule:
   import cligen
-  dispatch(compose_variants)
+  dispatchMulti(
+        [compose.compose_variants, cmdName="compose"],
+        [refmers.countRefKmers, cmdName="count"],
+  )

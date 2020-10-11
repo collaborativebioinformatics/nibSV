@@ -2,6 +2,8 @@ NIMBLE_DIR?=${CURDIR}/nimbleDir
 export NIMBLE_DIR
 # Alternatively, use --nimbleDir:${NIMBLE_DIR} everywhere
 
+build:
+	nim c src/nib.nim
 all:
 	${MAKE} install
 quick:
