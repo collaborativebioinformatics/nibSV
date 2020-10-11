@@ -34,7 +34,7 @@ proc compose_variants*(variant_file: string, reference_file: string): seq[string
   ## Returns a Sequence of strings representing the DNA sequence of the flanking
   ## regions and variant sequence.
 
-  var composed_seqs = newSeq[string](1)
+  var composed_seqs = newSeq[string]()
 
   ## Open FASTA index
   var fai: Fai
