@@ -29,7 +29,7 @@ proc compose(variant: Variant, right_flank: string,
   return combined_sequence
 
 
-proc compose_variants*(variant_file: string, reference_file: string) =
+proc compose_variants*(variant_file: string, reference_file: string): seq[string] =
   ## function to compose variants from their sequence / FASTA flanking regions
   ## Returns a Sequence of strings representing the DNA sequence of the flanking
   ## regions and variant sequence.
