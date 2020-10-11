@@ -1,5 +1,5 @@
-proc main() =
-    echo "empty so far"
+from nibpkg/compose import compose_variants
 
 if isMainModule:
-    main()
+  import cligen
+  dispatch(compose_variants)
