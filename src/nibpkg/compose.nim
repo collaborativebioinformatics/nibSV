@@ -6,15 +6,20 @@ type
     left, right: string
 
 proc retrieve_flanking_sequences_from_fai(fastaIdx: Fai, chrom: string,
-        start_pos : int, end_pos : int, flank: int): FlankSeq =
+        start_pos: int, end_pos: int, flank: int): FlankSeq =
   ## this function lacks a return
   result.left = fastaIdx.get(chrom, max(0, start_pos - flank), start_pos)
   result.right = fastaIdx.get(chrom, end_pos, end_pos + flank)
 
+proc compose(variant: Variant, right_flank: string,
+    left_flank: string): string =
+  var combined_sequence = right_flank & left_flank
+
+  return combined_sequence
 
 
 proc compose_variants*(variant_file: string, reference_file: string) =
-  ## function to compose
+  ## function to compose variants from their sequence / FASTA flanking regions
 
   ## Open FASTA index
   var fai: Fai
@@ -31,7 +36,8 @@ proc compose_variants*(variant_file: string, reference_file: string) =
     doAssert info_fields.get("SVTYPE", svtype) == Status.OK
     let sv_chrom = $v.CHROM
     ## Retrieve flanks, either from FAI or string cache
-    let flanks = retrieve_flanking_sequences_from_fai(fai, sv_chrom, int(v.start), int(v.stop), 100)
+    let flanks = retrieve_flanking_sequences_from_fai(fai, sv_chrom, int(
+        v.start), int(v.stop), 100)
     ## Generate a single sequence from variant seq + flank,
     ## taking into account the variant type.
 
