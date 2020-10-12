@@ -5,6 +5,12 @@ type
   FlankSeq = object
     left, right: string
 
+type
+  PositionedSequence = object
+    sequence: string
+    chrom: string
+    position: int32
+
 proc retrieve_flanking_sequences_from_fai(fastaIdx: Fai, chrom: string,
         start_pos: int, end_pos: int, flank: int): FlankSeq =
   ## this function lacks a return
@@ -12,7 +18,7 @@ proc retrieve_flanking_sequences_from_fai(fastaIdx: Fai, chrom: string,
   result.right = fastaIdx.get(chrom, end_pos, end_pos + flank)
 
 proc compose(variant: Variant, right_flank: string,
-    left_flank: string): string =
+    left_flank: string): PositionedSequence =
 
   var inner_seq: string
   var variant_type: string
@@ -26,15 +32,21 @@ proc compose(variant: Variant, right_flank: string,
     "Error: Inversion processing not implemented.")
   var combined_sequence = right_flank & inner_seq & left_flank
 
-  return combined_sequence
+  var pos_seq: PositionedSequence
+  pos_seq.position = int32(variant.start) - int32(len(right_flank))
+  pos_seq.chrom = $variant.CHROM
+  pos_seq.sequence = combined_sequence
+
+  return pos_seq
 
 
-proc compose_variants*(variant_file: string, reference_file: string): seq[string] =
+proc compose_variants*(variant_file: string, reference_file: string): seq[
+    PositionedSequence] =
   ## function to compose variants from their sequence / FASTA flanking regions
   ## Returns a Sequence of strings representing the DNA sequence of the flanking
   ## regions and variant sequence.
 
-  var composed_seqs = newSeq[string]()
+  var composed_seqs = newSeq[PositionedSequence]()
 
   ## Open FASTA index
   var fai: Fai
