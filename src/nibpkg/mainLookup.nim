@@ -12,6 +12,7 @@ proc dumpIdxToFile*(idx : svIdx, fn : string) =
     strm.close()
 
 proc loadIdxFromFile*(fn : string) : svIdx =
+    new(result) # = newTable[uint64, tuple[refCount:uint32, altCount:uint32, svs:seq[uint32]]]()
     let strm = openFileStream(fn, fmRead)
     strm.unpack(result)
     strm.close()
