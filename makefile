@@ -22,8 +22,8 @@ integ-test:
 install:
 	nimble install -y
 pretty:
-	find src -name '*.nim' | xargs -L1 nimpretty --indent=4 --maxLineLen=1024
-	find tests -name '*.nim' | xargs -L1 nimpretty --indent=4 --maxLineLen=1024
+	find src -name '*.nim' | xargs -L1 nimpretty --maxLineLen=1024
+	find tests -name '*.nim' | xargs -L1 nimpretty --maxLineLen=1024
 setup: vendor/threadpools vendor/STRling
 	nimble install --verbose -y hts kmer bitvector cligen msgpack4nim
 	cd vendor/threadpools; nimble install --verbose -y
