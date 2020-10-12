@@ -3,19 +3,7 @@ import ./kmers
 import ./compose
 import tables
 import msgpack4nim, streams
-
-type svIdx* = TableRef[uint64, tuple[refCount: uint32, altCount:uint32, svs:seq[uint32]]]
-
-proc dumpIdxToFile*(idx : svIdx, fn : string) =
-    let strm = openFileStream(fn, fmWrite)
-    strm.pack(idx)
-    strm.close()
-
-proc loadIdxFromFile*(fn : string) : svIdx =
-    new(result) # = newTable[uint64, tuple[refCount:uint32, altCount:uint32, svs:seq[uint32]]]()
-    let strm = openFileStream(fn, fmRead)
-    strm.unpack(result)
-    strm.close()
+import ./svidx
 
 proc lookupKmer(idx : svIdx, kmer : seed_t): seq[uint32] = 
   return idx[ uint64(kmer.kmer) ].svs
@@ -31,19 +19,13 @@ proc buildSVIdx*(reference_path:string, vcf_path: string, flank:int=100, k:int=2
  doAssert(open(variants, vcf_path))
 
  var sv_type: string
- var sv_idx = 0'u32
+ var sv_idx = 0
  for v in variants:
    doAssert v.info.get("SVTYPE", svtype) == Status.OK
    let sv_chrom = $v.CHROM
 
    let flanks = fai.retrieve_flanking_sequences_from_fai($v.CHROM, v.start.int, v.stop.int, flank)
-
    for s in [flanks.left, flanks.right]:
-     var l = Dna(s).dna_to_kmers(k)
-     for kmer in l.seeds:
-
-       var kc = result.mgetOrPut(kmer.kmer, (0'u32, 0'u32, newSeq[uint32]()))
-       kc.altCount.inc
-       kc.svs.add(sv_idx)
+     result.insert(s, k, sv_idx)
 
    sv_idx.inc
