@@ -18,9 +18,6 @@ proc countRefKmers*(input_fn: string):CountTable[Bin] =
         for k in convertedKmers.seeds:
             kmerCountTable.inc(k.kmer)
         return kmerCountTable
-
-        # put kmer in count table, then return the tables
-        # 
 when isMainModule:
     import cligen
     dispatch(countRefKmers)
