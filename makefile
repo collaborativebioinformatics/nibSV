@@ -12,6 +12,9 @@ quick:
 help:
 	nimble -h
 	nimble tasks
+tests:
+	@# much faster than nimble
+	${MAKE} -C tests
 test:
 	nimble test  # uses "tests/" directory by default
 integ-test:
@@ -22,4 +25,4 @@ pretty:
 	find src -name '*.nim' | xargs -L1 nimpretty --indent=4 --maxLineLen=1024
 	find tests -name '*.nim' | xargs -L1 nimpretty --indent=4 --maxLineLen=1024
 
-.PHONY: test
+.PHONY: test tests
