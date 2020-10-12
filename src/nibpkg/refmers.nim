@@ -32,8 +32,8 @@ proc countByChunk(fai: Fai, chunk: Chunk, kmer_size: int=21):CountTableRef[uint6
     var sub_seq = fai.get(chunk.chrom_name, chunk.chrom_start, chunk.chrom_end)
     result = buildKmerCountTable(sub_seq, kmer_size)
 
-proc countRefKmers*(input_fn: string, kmer_size: int=21, chunk_size: int=1000000) =
-    ##Walk over reference sequences and count kmers
+proc showCounts*(input_fn: string, kmer_size: int=21, chunk_size: int=1000000) =
+    ##Walk over reference sequences and count kmers.
     var fai: Fai
     if not fai.open(input_fn):
         quit "couldn't open fasta"
@@ -42,8 +42,9 @@ proc countRefKmers*(input_fn: string, kmer_size: int=21, chunk_size: int=1000000
         let chunkCount = countByChunk(fai, i, kmer_size)
         echo(chunkCount)
 
-proc mainRefCounter*(input_fn: string, svKmers: svIdx, kmer_size: int=21, chunk_size: int=1000000) =
-    ##Walk over reference sequences and count kmers
+proc updateSvIdx*(input_fn: string, svKmers: svIdx, kmer_size: int=21, chunk_size: int=1000000) =
+    ##Walk over reference sequences and count kmers.
+    ##Update any existing svIdx entries with these counts.
     var fai: Fai
     if not fai.open(input_fn):
         quit "couldn't open fasta"

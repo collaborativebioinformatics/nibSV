@@ -6,6 +6,6 @@ when isMainModule:
   import cligen
   dispatchMulti(
         [compose.compose_variants, cmdName="compose"],
-        [refmers.countRefKmers, cmdName="count"],
+        [refmers.showCounts, cmdName="count"],
         [mainLookup.buildSVIdx, cmdName="lookup"],
   )
