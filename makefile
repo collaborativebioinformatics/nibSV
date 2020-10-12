@@ -24,5 +24,15 @@ install:
 pretty:
 	find src -name '*.nim' | xargs -L1 nimpretty --indent=4 --maxLineLen=1024
 	find tests -name '*.nim' | xargs -L1 nimpretty --indent=4 --maxLineLen=1024
+setup: vendor/threadpools vendor/STRling
+	nimble install --verbose -y hts kmer bitvector cligen msgpack4nim
+	cd vendor/threadpools; nimble install --verbose -y
+	cd vendor/STRling; nimble install --verbose -y
+vendor/threadpools vendor/STRling:
+	git submodule update --init
+rsync: # not used for now
+	mkdir -p ${NIMBLE_DIR}/pkgs/
+	rsync -av vendor/STRling/ ${NIMBLE_DIR}/pkgs/strling-0.3.0/
+	rsync -av vendor/threadpools/ ${NIMBLE_DIR}/pkgs/threadpools-0.1.0/
 
 .PHONY: test tests

@@ -13,4 +13,4 @@ bin           = @["nib"]
 
 # Dependencies
 
-requires "nim >= 1.2.0", "hts", "kmer", "bitvector >= 0.4.10", "cligen"
+requires "nim >= 1.2.0", "hts", "kmer", "bitvector >= 0.4.10", "cligen", "msgpack4nim"
