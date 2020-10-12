@@ -1,11 +1,10 @@
-import math
 import hts
 
 type
-  FlankSeq = object
-    left, right: string
+  FlankSeq* = object
+    left*, right*: string
 
-proc retrieve_flanking_sequences_from_fai(fastaIdx: Fai, chrom: string,
+proc retrieve_flanking_sequences_from_fai*(fastaIdx: Fai, chrom: string,
         start_pos : int, end_pos : int, flank: int): FlankSeq =
   ## this function lacks a return
   result.left = fastaIdx.get(chrom, max(0, start_pos - flank), start_pos)
