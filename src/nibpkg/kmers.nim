@@ -370,9 +370,13 @@ proc spacing_kmer*(pot:pot_t,space: int): pot_t =
     new(result) #default return knwos the type from function header
     result.word_size=pot.word_size*2
 
-    for i in (0..pot.seeds.len-1-(space+int(pot.word_size))):
+    for i in (0..pot.seeds.len-(1+space+int(2*pot.word_size))):
+        doAssert(i < pot.seeds.len)
+        var j = i+space+ int(2*pot.word_size)
+        doAssert(j < pot.seeds.len)
+
         let k1 = pot.seeds[i]
-        let k2 = pot.seeds[i+space+ int(pot.word_size)]
+        let k2 = pot.seeds[i+space+ int(2*pot.word_size)]
 
         #new kmer:
         var k : seed_t
