@@ -25,7 +25,7 @@ pretty:
 	find src -name '*.nim' | xargs -L1 nimpretty --indent=4 --maxLineLen=1024
 	find tests -name '*.nim' | xargs -L1 nimpretty --indent=4 --maxLineLen=1024
 setup: rsync
-	nimble install --verbose -y hts kmer bitvector cligen
+	nimble install --verbose -y hts kmer bitvector cligen msgpack4nim
 rsync:
 	mkdir -p ${NIMBLE_DIR}/pkgs/
 	rsync -av vendor/STRling/ ${NIMBLE_DIR}/pkgs/strling-0.3.0/
