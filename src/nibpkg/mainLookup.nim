@@ -7,10 +7,13 @@ import msgpack4nim, streams
 type svIdx* = TableRef[uint64, tuple[refCount: uint32, altCount:uint32, svs:seq[uint32]]]
 
 
-proc dumpIdxToFile(idx : svIdx, fn : string) =
+proc dumpIdxToFile*(idx : svIdx, fn : string) =
     let strm = openFileStream(fn, fmWrite)
     strm.pack(idx)
 
+proc loadIdxFromFile*(fn : string) : svIdx =
+    let strm = openFileStream(fn, fmRead)
+    strm.unpack(result)
 
 
 proc buildSVIdx(reference_path:string, vcf_path: string, flank:int=100, k:int=25): svIdx =
