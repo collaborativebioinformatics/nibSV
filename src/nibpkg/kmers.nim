@@ -360,11 +360,11 @@ proc nuniq*(pot: spot_t): int =
 
 
 proc test_FS*(pot: pot_t) =
-    for i in pot.seeds: 
+    for i in pot.seeds:
         echo bin_to_dna(i.kmer,pot.word_size,i.strand)
 
-proc spacing_kmer*(pot:pot_t,space: int): pot_t = 
-    doAssert(space!=0)
+proc spacing_kmer*(pot:pot_t,space: int): pot_t =
+    doAssert(space > int(pot.word_size))
     doAssert(pot.word_size <= 16)
 
     new(result) #default return knwos the type from function header
@@ -372,24 +372,13 @@ proc spacing_kmer*(pot:pot_t,space: int): pot_t =
 
     for i in (0..pot.seeds.len-1-(space+int(pot.word_size))):
         let k1 = pot.seeds[i]
-        let k2 = pot.seeds[i+space]
+        let k2 = pot.seeds[i+space+ int(pot.word_size)]
 
         #new kmer:
         var k : seed_t
-        var s : uint64 = (pot.word_size)-1
-
-        s=s*2
-
-        k.kmer =  k1.kmer 
-        k.kmer=k.kmer << s
+        k.kmer =  k1.kmer
+        k.kmer=k.kmer << (2*pot.word_size)
         k.kmer=k.kmer or k2.kmer
         k.strand=k1.strand
         k.pos=k1.pos
         result.seeds.add(k)
-
-
-
-
-
-
-
