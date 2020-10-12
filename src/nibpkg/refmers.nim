@@ -14,8 +14,7 @@ proc addRefCount*(refKmers: CountTableRef[uint64], svKmers: svIdx) =
         if svKmers.hasKey(k):
             svKmers[k].refCount += uint32(v)
 
-proc createChunk*(fai: Fai, chunk_size: int): seq[Chunk] =
-    var chunkSeq = newSeq[Chunk]()
+iterator createdChunks*(fai: Fai, chunk_size: int): Chunk =
     for i in 0..<fai.len:
         let chrom_name = fai[i]
         let chrom_len = fai.chrom_len(chrom_name)
@@ -24,8 +23,7 @@ proc createChunk*(fai: Fai, chunk_size: int): seq[Chunk] =
             chunk.chrom_name = chrom_name
             chunk.chrom_start = j
             chunk.chrom_end = j + chunk_size
-            chunkSeq.add(chunk)
-    return chunkSeq
+            yield chunk
 
 proc buildKmerCountTable*(full_sequence: string, kmer_size: int=21):CountTableRef[uint64] =
     let convertedKmers: pot_t = dna_to_kmers(full_sequence, kmer_size)
@@ -44,8 +42,7 @@ proc countRefKmers*(input_fn: string, kmer_size: int=21, chunk_size: int=1000000
     if not fai.open(input_fn):
         quit "couldn't open fasta"
     
-    let chunks = createChunk(fai, chunk_size)
-    for i in chunks:
+    for i in createdChunks(fai, chunk_size):
         let chunkCount = countByChunk(fai, i, kmer_size)
         echo(chunkCount)
 
@@ -55,12 +52,10 @@ proc mainRefCounter*(input_fn: string, svKmers: svIdx, kmer_size: int=21, chunk_
     if not fai.open(input_fn):
         quit "couldn't open fasta"
     
-    let chunks = createChunk(fai, chunk_size)
-    for i in chunks:
+    for i in createdChunks(fai, chunk_size):
         let chunkCount = countByChunk(fai, i, kmer_size)
         addRefCount(chunkCount, svKmers)
 
 when isMainModule:
     import cligen
     dispatch(countRefKmers)
-    
