@@ -16,7 +16,7 @@ proc loadIdxFromFile*(fn : string) : svIdx =
     strm.unpack(result)
 
 
-proc buildSVIdx(reference_path:string, vcf_path: string, flank:int=100, k:int=25): svIdx =
+proc buildSVIdx*(reference_path:string, vcf_path: string, flank:int=100, k:int=25): svIdx =
 
  ## Open FASTA index
  result = newTable[uint64, tuple[refCount: uint32, altCount:uint32, svs:seq[uint32]]]()
