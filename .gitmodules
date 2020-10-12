@@ -1,0 +1,6 @@
+[submodule "vendor/STRling"]
+	path = vendor/STRling
+	url = https://github.com/quinlan-lab/STRling.git
+[submodule "vendor/threadpools"]
+	path = vendor/threadpools
+	url = https://github.com/yglukhov/threadpools.git

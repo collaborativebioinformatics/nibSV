@@ -1,6 +1,9 @@
 ## Fetching
-git clone https://github.com/quinlan-lab/STRling.git
-git clone https://github.com/yglukhov/threadpools.git
+These are not in Nimble, so we need to install them manually.
 
-But then delete the `.git/` directories, as we want our own copies
-(for speed and simplicity).
+* https://github.com/quinlan-lab/STRling.git
+* https://github.com/yglukhov/threadpools.git
+
+For now, we can use git-submodules.
+
+    git submodule update --init
