@@ -6,7 +6,7 @@ type
     Read* = object
         compatible_SVs* : CountTable[uint32]
 
-proc process_read(s : string, idx : svIdx, k:int=25): Read =
+proc process_read*(s : string, idx : svIdx, k:int=25): Read =
     var x : Read
     var l = Dna(s).dna_to_kmers(k)
     for kmer in l.seeds:
@@ -16,7 +16,7 @@ proc process_read(s : string, idx : svIdx, k:int=25): Read =
 
     return x
 
-proc filter_read_matches(read : Read, min_matches:int=2, winner_takes_all:bool=false) =
+proc filter_read_matches*(read : Read, min_matches:int=2, winner_takes_all:bool=false) =
     
     var removables : seq[uint32]
     var max_key:uint32=0
