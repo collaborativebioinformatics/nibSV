@@ -38,7 +38,6 @@ type
     Hash* = int
 
     ##  seeds - a pointer to the kmers
-    ##  n  - the number of kmers in the database (h)
     pot_t* = ref object of RootObj
         word_size*: uint8 # <=32
         seeds*: seq[seed_t]
@@ -174,7 +173,6 @@ proc dna_to_kmers*(sq: Dna; k: int): pot_t =
     var kmers: pot_t
     new(kmers)
     kmers.seeds = newSeq[seed_t](n)
-    #kmers.n = n.uint32
     kmers.word_size = k.uint8
     i = 0
 
