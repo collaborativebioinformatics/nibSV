@@ -23,3 +23,6 @@ proc classify_file(filename : string, idx : svIdx): CountTableRef =
         return classify_bam
     else:
         quit("Error: only BAM input currently supported.")
+
+proc main_classify(read_file : string, vcf_file : string, ref_file : string, k:int=25) =
+    

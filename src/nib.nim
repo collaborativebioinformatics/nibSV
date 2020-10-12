@@ -8,4 +8,5 @@ when isMainModule:
         [compose.compose_variants, cmdName="compose"],
         [refmers.showCounts, cmdName="count"],
         [mainLookup.buildSVIdx, cmdName="lookup"],
+        [classify.main_classify, cmdName="classify"],
   )
