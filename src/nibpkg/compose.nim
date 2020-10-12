@@ -1,9 +1,8 @@
-import math
 import hts
 
 type
-  FlankSeq = object
-    left, right: string
+  FlankSeq* = object
+    left*, right*: string
 
 type
   PositionedSequence = object
