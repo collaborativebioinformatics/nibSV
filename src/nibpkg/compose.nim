@@ -8,6 +8,7 @@ type
 type
   PositionedSequence = object
     sequence: string
+    chrom: string
     position: int32
 
 proc retrieve_flanking_sequences_from_fai(fastaIdx: Fai, chrom: string,
@@ -33,6 +34,7 @@ proc compose(variant: Variant, right_flank: string,
 
   var pos_seq: PositionedSequence
   pos_seq.position = int32(variant.start) - int32(len(right_flank))
+  pos_seq.chrom = $variant.CHROM
   pos_seq.sequence = combined_sequence
 
   return pos_seq
