@@ -2,11 +2,29 @@ import hts
 import ./kmers
 import ./compose
 import tables
+import msgpack4nim, streams
 
 type svIdx* = TableRef[uint64, tuple[refCount: uint32, altCount:uint32, svs:seq[uint32]]]
 
+proc dumpIdxToFile*(idx : svIdx, fn : string) =
+    let strm = openFileStream(fn, fmWrite)
+    strm.pack(idx)
+    strm.close()
 
-proc buildSVIdx(reference_path:string, vcf_path: string, flank:int=100, k:int=25): svIdx =
+proc loadIdxFromFile*(fn : string) : svIdx =
+    new(result) # = newTable[uint64, tuple[refCount:uint32, altCount:uint32, svs:seq[uint32]]]()
+    let strm = openFileStream(fn, fmRead)
+    strm.unpack(result)
+    strm.close()
+
+proc lookupKmer(idx : svIdx, kmer : seed_t): seq[uint32] = 
+  return idx[ uint64(kmer.kmer) ].svs
+
+proc lookupKmer(idx : svIdx, kmer : seed_t): seq[uint32] = 
+  return idx[ seed_t.kmer ].svs
+
+
+proc buildSVIdx*(reference_path:string, vcf_path: string, flank:int=100, k:int=25): svIdx =
 
  ## Open FASTA index
  result = newTable[uint64, tuple[refCount: uint32, altCount:uint32, svs:seq[uint32]]]()
