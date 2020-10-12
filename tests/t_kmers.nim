@@ -113,3 +113,16 @@ suite "kmer order":
         for i in countup(2, kms.seeds.len - 2, 2):
             check (kms.seeds[i].pos > lv)
             lv = kms.seeds[i].pos
+
+suite "sparse_seeds":
+
+    let dna = "CCCCCCCCCCCCCCCCCCCTTTTTTTTTTTTTTTTTTTTTTT"
+    let kms = kmers.dna_to_kmers(dna, 11)
+
+    #kmers.test_FS(kms) 
+
+    test "spaced seeds ":
+        let test_seeds= kmers.spacing_kmer(kms,25)
+        for i in test_seeds.seeds:
+            echo i
+        kmers.test_FS(test_seeds)
