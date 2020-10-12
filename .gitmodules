@@ -1,6 +1,8 @@
 [submodule "vendor/STRling"]
 	path = vendor/STRling
 	url = https://github.com/quinlan-lab/STRling.git
+	ignore = dirty
 [submodule "vendor/threadpools"]
 	path = vendor/threadpools
 	url = https://github.com/yglukhov/threadpools.git
+	ignore = dirty
