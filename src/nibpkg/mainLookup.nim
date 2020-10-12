@@ -17,6 +17,9 @@ proc loadIdxFromFile*(fn : string) : svIdx =
     strm.unpack(result)
     strm.close()
 
+proc lookupKmer(idx : svIdx, kmer : seed_t): seq[uint32] = 
+  return idx[ seed_t.kmer ].svs
+
 
 proc buildSVIdx*(reference_path:string, vcf_path: string, flank:int=100, k:int=25): svIdx =
 
