@@ -10,13 +10,13 @@ type
     chrom: string
     position: int32
 
-proc retrieve_flanking_sequences_from_fai(fastaIdx: Fai, chrom: string,
+proc retrieve_flanking_sequences_from_fai*(fastaIdx: Fai, chrom: string,
         start_pos: int, end_pos: int, flank: int): FlankSeq =
   ## this function lacks a return
   result.left = fastaIdx.get(chrom, max(0, start_pos - flank), start_pos)
   result.right = fastaIdx.get(chrom, end_pos, end_pos + flank)
 
-proc compose(variant: Variant, right_flank: string,
+proc compose*(variant: Variant, right_flank: string,
     left_flank: string): PositionedSequence =
 
   var inner_seq: string
