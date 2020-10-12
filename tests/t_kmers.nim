@@ -119,10 +119,16 @@ suite "sparse_seeds":
     let dna = "CCCCCCCCCCCCCCCCCCCTTTTTTTTTTTTTTTTTTTTTTT"
     let kms = kmers.dna_to_kmers(dna, 11)
 
-    #kmers.test_FS(kms) 
+    #kmers.test_FS(kms)
 
     test "spaced seeds ":
         let test_seeds= kmers.spacing_kmer(kms,25)
+
+        echo dna.len, " ", test_seeds.seeds.len
+
+        var count : int = 0
         for i in test_seeds.seeds:
-            echo i
-        kmers.test_FS(test_seeds)
+            var myDNA = kmers.bin_to_dna(i.kmer,test_seeds.word_size,i.strand)
+            check((myDNA.len mod 2) == 0 )
+            echo myDNA, " ", dna
+            count.inc
