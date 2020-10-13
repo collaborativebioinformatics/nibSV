@@ -1,3 +1,4 @@
+# vim: sw=4 ts=4 sts=4 tw=0 et:
 import compose
 import refmers
 import svidx
