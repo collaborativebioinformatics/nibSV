@@ -364,25 +364,29 @@ proc test_FS*(pot: pot_t) =
         echo bin_to_dna(i.kmer,pot.word_size,i.strand)
 
 proc spacing_kmer*(pot:pot_t,space: int): pot_t =
-    doAssert(space > int(pot.word_size))
+    #doAssert(space > int(pot.word_size)) # typical, but not necessary
     doAssert(pot.word_size <= 16)
 
     new(result) #default return knwos the type from function header
-    result.word_size=pot.word_size*2
+    result.word_size = pot.word_size*2
 
-    for i in (0..pot.seeds.len-(1+space+int(2*pot.word_size))):
-        doAssert(i < pot.seeds.len)
-        var j = i+space+ int(2*pot.word_size)
-        doAssert(j < pot.seeds.len)
+    for i in (0 ..< pot.seeds.len - 2*(space + pot.word_size.int)):
+        let j = i + 2*(space + pot.word_size.int)
+        assert(j < pot.seeds.len)
 
         let k1 = pot.seeds[i]
-        let k2 = pot.seeds[i+space+ int(2*pot.word_size)]
+        let k2 = pot.seeds[j]
+        assert(k1.strand == k2.strand)
 
-        #new kmer:
+        # new kmer
         var k : seed_t
-        k.kmer =  k1.kmer
-        k.kmer=k.kmer << (2*pot.word_size)
-        k.kmer=k.kmer or k2.kmer
-        k.strand=k1.strand
-        k.pos=k1.pos
+        let (left, right) = if k1.strand == forward:
+            (k1, k2)
+        else:
+            (k2, k1)
+        k.kmer = left.kmer
+        k.kmer = k.kmer << 2*pot.word_size
+        k.kmer = k.kmer or right.kmer
+        k.strand = left.strand
+        k.pos = left.pos
         result.seeds.add(k)
