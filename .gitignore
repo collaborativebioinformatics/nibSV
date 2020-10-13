@@ -1,3 +1,5 @@
 /nimbleDir
 /nib
 /src/nib
+tests/test_read
+tests/test_svidx
