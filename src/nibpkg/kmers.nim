@@ -132,8 +132,10 @@ proc dna_to_kmers*(sq: Dna; k: int): pot_t =
     forward_kmer.strand = forward
     reverse_kmer.strand = reverse
 
-    #var kmer_stack = deques.initDeque[seed_t](128)
-    var kmer_stack = newSeqOfCap[seed_t](128)
+    var kmers: pot_t
+    new(kmers)
+    kmers.seeds = newSeqOfCap[seed_t](max(sq.len - int(k) + 1,0))
+    kmers.word_size = k.uint8
 
     ##  lk is the length of the kmers being built on the fly. The variable n is the total number of
     var
@@ -165,23 +167,14 @@ proc dna_to_kmers*(sq: Dna; k: int): pot_t =
 
         if lk >= k:
             inc(n, 2)
-            kmer_stack.add(forward_kmer)
-            kmer_stack.add(reverse_kmer)
+            kmers.seeds.add(forward_kmer)
+            kmers.seeds.add(reverse_kmer)
             inc(forward_kmer.pos, 1)
             inc(reverse_kmer.pos, 1)
         inc(i)
 
-    var kmers: pot_t
-    new(kmers)
-    kmers.seeds = newSeq[seed_t](n)
-    kmers.word_size = k.uint8
-    i = 0
 
-    while i < n:
-        #kmers.seeds[i] = kmer_stack.popFirst()
-        kmers.seeds[i] = kmer_stack[i] # would also be fine
-        #echo format("[$#]->$#", i, kmers.seeds[i].kmer)
-        inc(i)
+
 
     return kmers
 
