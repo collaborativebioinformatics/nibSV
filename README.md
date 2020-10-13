@@ -1,23 +1,15 @@
-# nibSV
-A kmer based method for detecting a panel of known SVs in new genomes.
+<img align="right" width="300" height="300" src="https://github.com/collaborativebioinformatics/nibSV/blob/main/SVNibbler.png">
 
-## Please cite our work -- here is the ICMJE Standard Citation:
-
-### ...and a link to the DOI:
-
-## Awesome Logo
-
-### You can make a free DOI with zenodo <link>
-
-## Website (if applicable)
+# NibblerSV
 
 ## Intro statement
-Structural variation (SV) are the largest source of genetic variation within the human population. Long read DNA sequencing is becoming the preferred method for discovering structural variants. Structural variation can be longer than a short-read (<500bp) DNA trace, meaning the SV allele is not contained, which causes challenges and problems in the detection. Nevertheless, short reads are the way to go to obtain robust allele frequencies across a population.
+Structural variation (SV) are the largest source of genetic variation within the human population. Long read DNA sequencing is becoming the preferred method for discovering structural variants. Structural variation can be longer than a short-read (<500bp) DNA trace, meaning the SV allele is not contained, which causes challenges and problems in the detection.
 
-## What's the problem?
-These long differences in DNA are harder to detect computationally, due to alignment, and sequence context. Pacifiic Biosciences HiFi reads are long (~10-20kb) and accurate (phred QV > 20). HiFi reads have the ability to identify a wide range of SV because they encapsulate the SV length spectrum. There are a number of good software tools to detect structural variants in HiFi data: Sniffles, PBSV, and others. Using these SV calls as priors we are going to identify kmers that can be used as SV specific markers. Building a database of SV specific kmers will allow us to integrate the large number of short-read datasets.
+Long read sequencing has proven superior to identify Structural Variations in individuals. Nevertheless, it is important to obtain accurate allele frequencies of these complex alleles across a population to rank and identify potential pathogenic variations.  Thus, it is important to be able to genotype SV events in a large set of previously short read based sequenced samples (e.g. 1000genomes, Topmed, CCDG, etc.).  Two main approaches has been recently shown to achieve this with high accuracy even for insertions: Paragraph and VG. However, these methods still consume hours per sample and even more depending on the number of SV to be genotyped along the genome or in regions. Furthermore and maybe more crucially rely on precise breakpoints that do not change in other samples. This assumption might be flawed over repetitive regions.  In addition the problem currently arises that some data sets are mapped to different genomic version than others (e.g hg19 vs. GRCH38 vs. CHM13) and will require a different VCF catalog to be genotyped.  
 
-## Why should we solve it?
+# Why NibblerSV
+NibblerSV can overcome these challenges. NibblerSV relies on a k-mer based strategy to identify SV breakpoints in short read data set. Due to innovative k-mer design and efficient implementation, NibblerSV is able to run on a 30x cram file within minutes with low memory requirements. Its k-mer strategy of spaced k-mers allow a relaxed constrain on the precision of the breakpoint. In addition, utilizing k-mers NibblerSV is independent of the genomic reference the short reads were aligned to and can even work on raw fastq reads. This makes NibblerSV a lightweight, scalable and easy to apply methods to identify the frequency of Structural Variatons. 
+
 
 Who doesn't like to nibble on SV?
 # What is <this software>?
