@@ -12,7 +12,7 @@ NibblerSV can overcome these challenges. NibblerSV relies on a k-mer based strat
 
 
 Who doesn't like to nibble on SV?
-# What is <this software>?
+# How does it work <this software>?
 NibblerSV is a light weighted framework to identify the presence and absence of Structural Variations across a large set of Illumina sequenced samples. To achieve this we take a VCF file including all the SV that should be genotyped. Next, we extract the reference and alternative allele kmers. This is done such that we include the flanking regions. Subsequently, we count the occurrence of these k-mers in the reference fasta file. This is necessary to not miscount certain k-mers. To enable large scaling of NibblerSV the results of these two steps are written into a temporary file, which is all that is needed for the actual genotyping step. 
 
 During the genotyping step NibblerSV uses the small temporary file  and the bam/cram file of the sample. NibblerSV then identifies the presence /absence of the reference and alternative k-mer across the entire sample. This is very fast and requires only minimal resources of memory as the number of k-mers is limited. Once NibblerSV finished the scanning of the bam/cram file it reports out which SV have been re-identified by adding a tag in the output VCF file of this sample. The VCF per sample can then be merged to obtain population frequencies. 
@@ -21,73 +21,21 @@ During the genotyping step NibblerSV uses the small temporary file  and the bam/
 
 # How to use <this software>
 
-# Software Workflow Diagram
-Rough workflow  (Eric D):
+To run nibblerSV just execute this example which uses the test data provided. You should have a copy of GRCh38 available to run this. 
+```
 
-1. Parse a SV VCF file
-   Reconstitute alleles (adding flank to deletions and insertions)
-   Build map/hash/set/vector of kmers that are present in SVs (SVnibs)
-2. Parse human reference genome generating another set of kmers (Brent)
-3. Remove SVnibs that are in the human reference genome. We cannot quickly type those SVs that are reference derived. This will remove many of the insertions: Alu’s lines ect.
-4. Type. In this stage we will go through novel/new genomes and see if they contain the SVnibs. Account for frequency, and depth.
+./src/nib main -v test-data/GIAB_PBSV_TRIO_CALLS_TEST2.vcf -r /Users/zkronenberg/igv/genomes/seq/hg38.fa.gz --reads-fn test-data/event_one.bam -p WaWa
+```
 
-How to make this rapid?
 
-Update VCF?
-
-# File structure diagram
+# Quickstart
 ## Input
 1. A Strucutural variant VCF
 2. An indexed FASTA file of the reference genome
 3. A BAM/CRAM file (new genome)
 
-**important** : Reference genome needs to match VCF
-
-#### _Define paths, variable names, etc_
-
-# Installation options:
-
-We provide two options for installing <this software>: Docker or directly from Github.
-
-### Docker
-
-The Docker image contains <this software> as well as a webserver and FTP server in case you want to deploy the FTP server. It does also contain a web server for testing the <this software> main website (but should only be used for debug purposes).
-
-1. `docker pull ncbihackathons/<this software>` command to pull the image from the DockerHub
-2. `docker run ncbihackathons/<this software>` Run the docker image from the master shell script
-3. Edit the configuration files as below
-
-### Installing <this software> from Github
-
-1. `git clone https://github.com/NCBI-Hackathons/<this software>.git`
-2. Edit the configuration files as below
-3. `sh server/<this software>.sh` to test
-4. Add cron job as required (to execute <this software>.sh script)
-
-### Configuration
-
-```Examples here```
+## Output
+A VCF file with a tag in INFO field identifying the present/ absance for each SV. 
 
 # Testing
-
-We tested four different tools with <this software>. They can be found in [server/tools/](server/tools/) .
-
-# Additional Functionality
-
-### DockerFile
-
-<this software> comes with a Dockerfile which can be used to build the Docker image.
-
-  1. `git clone https://github.com/NCBI-Hackathons/<this software>.git`
-  2. `cd server`
-  3. `docker build --rm -t <this software>/<this software> .`
-  4. `docker run -t -i <this software>/<this software>`
-
-### Website
-
-There is also a Docker image for hosting the main website. This should only be used for debug purposes.
-
-  1. `git clone https://github.com/NCBI-Hackathons/<this software>.git`
-  2. `cd Website`
-  3. `docker build --rm -t <this software>/website .`
-  4. `docker run -t -i <this software>/website`
+We have tested NibblerSV on HG002 from GIAB and various other control data sets. 
