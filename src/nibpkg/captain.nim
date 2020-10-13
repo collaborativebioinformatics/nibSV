@@ -10,6 +10,8 @@ proc main_runner*(variants_fn, refSeq_fn, prefix, reads_fn: string, kmerSize: in
     ## Main program to type SVs
     var dumpedIdx = "{prefix}.sv_kmers.msgpck".fmt
 
+    # Make preindex an option to take the msgpack, precomputed.
+    # In that case, skip this block.
     if(not preIndex):
         echo "building an SV kmer DB."
         var svs = buildSVIdx(refSeq_fn, variants_fn, flank, kmerSize)

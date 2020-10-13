@@ -42,7 +42,7 @@ proc updateSvIdx*(input_ref_fn: string, svKmers: svIdx, kmer_size: int = 21, chu
         quit "couldn't open fasta"
 
     for i in createdChunks(fai, chunk_size):
-        echo i
+        echo "i:", i
         updateChunk(svKmers, fai, i, kmer_size, spacedSeeds, space)
 
 when isMainModule:
