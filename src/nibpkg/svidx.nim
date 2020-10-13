@@ -58,8 +58,11 @@ proc loadIdxFromJson*(js: string): svIdx =
 proc run*() =
     var idx: svIdx
     new(idx)
-    var v: SvValue = (0'u32, 0'u32, @[0'u32])
+    var v: SvValue = (0'u32, 0'u32, @[0'u32, 1'u32])
     idx[42] = v
+    idx[41] = v
+    idx[43] = v
+    idx[40] = v
     echo dumpIdxToJson(idx)
 
 proc insert*(s: var svIdx, sequence: string, k: int, sv_idx: int = -1) =
