@@ -11,7 +11,7 @@ proc lookupKmer*(idx : svIdx, kmer : seed_t): seq[uint32] =
 proc buildSVIdx*(reference_path:string, vcf_path: string, flank:int=100, k:int=25): svIdx =
 
  ## Open FASTA index
- result = newTable[uint64, tuple[refCount: uint32, altCount:uint32, svs:seq[uint32]]]()
+ new(result)
  var fai: Fai
  doAssert fai.open(reference_path), "Failed to open FASTA file: " & reference_path
 

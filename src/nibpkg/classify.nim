@@ -6,7 +6,7 @@ import ./read
 import ./svidx
 
 proc classify_bam(filename : string, idx : svIdx, k:int=25): CountTableRef[uint32] =
-    result = newCountTable[uint32]()
+    new(result)
 
     var bamfile:Bam
     open(bamfile, filename, index=false)
