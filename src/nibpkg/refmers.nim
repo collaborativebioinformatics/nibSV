@@ -25,12 +25,11 @@ proc buildKmerCountTable(full_sequence: string, kmer_size: int = 21, spacedSeeds
     var convertedKmers: pot_t = dna_to_kmers(full_sequence, kmer_size)
     if(spacedSeeds):
         convertedKmers = spacing_kmer(convertedKmers, space)
-    result = newCountTable[uint64]()
+    result = newCountTable[uint64](8)
     for k in convertedKmers.seeds:
-        result.inc(uint64(k.kmer))
+        result.inc(k.kmer)
 
 proc countByChunk(fai: Fai, chunk: Chunk, kmer_size: int = 21, spacedSeeds: bool = false, space: int = 50): CountTableRef[uint64] =
-    new (result)
     var sub_seq = fai.get(chunk.chrom_name, chunk.chrom_start, chunk.chrom_end)
     result = buildKmerCountTable(sub_seq, kmer_size, spacedSeeds, space)
 
@@ -54,3 +53,15 @@ proc updateSvIdx*(input_ref_fn: string, svKmers: svIdx, kmer_size: int = 21, chu
     for i in createdChunks(fai, chunk_size):
         let chunkCount = countByChunk(fai, i, kmer_size, spacedSeeds, space)
         addRefCount(chunkCount, svKmers)
+
+when isMainModule:
+  import hts
+  var fai:Fai
+
+  if not fai.open("/data/human/g1k_v37_decoy.fa"):
+    quit "bad"
+
+  var s = fai.get("22")
+
+  var t = s.buildKmerCountTable()
+  echo t.len
