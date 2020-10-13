@@ -4,6 +4,7 @@ export tables
 import msgpack4nim, streams
 import ./kmers
 
+## A map from KMER ID -> (number of time kmer appears in a ref seq, number of times kmer appears in an alt seq, list(SVs) that kmer is contained in )
 type svIdx* = TableRef[uint64, tuple[refCount: uint32, altCount: uint32, svs: seq[uint32]]]
 
 proc dumpIdxToFile*(idx: svIdx, fn: string) =
