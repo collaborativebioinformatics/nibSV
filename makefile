@@ -4,6 +4,8 @@
 
 build:
 	nim c src/nib.nim
+release:
+	nim c -d:release -d:danger src/nib.nim
 all:
 	${MAKE} install
 quick:
