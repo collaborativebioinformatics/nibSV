@@ -1,4 +1,5 @@
 import hts
+import kmers
 
 type
   FlankSeq* = object
@@ -6,7 +7,8 @@ type
 
 type
   PositionedSequence = object
-    sequence: string
+    sequences: tuple[ref_seq : string, alt_seq : string]
+    kmers : tuple[ref_kmers : seq[seed_t], alt_kmers : seq[seed_t]]
     chrom: string
     position: int32
 
@@ -16,27 +18,35 @@ proc retrieve_flanking_sequences_from_fai*(fastaIdx: Fai, chrom: string,
   result.left = fastaIdx.get(chrom, max(0, start_pos - flank), start_pos)
   result.right = fastaIdx.get(chrom, end_pos, end_pos + flank)
 
-proc compose*(variant: Variant, right_flank: string,
-    left_flank: string): PositionedSequence =
+proc kmerize(s : string, k:int=21): seq[seed_t] =
+  return Dna(s).dna_to_kmers(k).seeds
 
-  var inner_seq: string
+proc compose*(variant: Variant, right_flank: string,
+    left_flank: string, k:int=21): PositionedSequence =
+  ## Takes in a VCF variant, the 5' and 3' reference flanking sequences,
+  ## and a kmer size. Produces a PositionedSequence, which holds the ref/alt
+  ## sequences as well as the kmers of those sequences (in addition to
+  ## minimal position information)
   var variant_type: string
   doAssert variant.info.get("SVTYPE", variant_type) == Status.OK
   if variant_type == "DEL":
-    inner_seq = ""
+    var deleted_bases : string = $variant.REF ## Chop the reference base prefix in the REF allele.
+    result.sequences.ref_seq = left_flank & deleted_bases & right_flank
+    result.sequences.alt_seq = left_flank & right_flank
+    result.kmers.ref_kmers = kmerize(result.sequences.ref_seq, k)
+    result.kmers.alt_kmers = kmerize(result.sequences.alt_seq, k)
   elif variant_type == "INS":
-    inner_seq = variant.ALT[0]
+    var inserted_seq : string = variant.ALT[0][1 .. ^0] ## Chop the reference base prefix in the ALT allele.
+    result.sequences.ref_seq = left_flank & right_flank
+    result.sequences.alt_seq = left_flank & inserted_seq & right_flank
+    result.kmers.ref_kmers = kmerize(result.sequences.ref_seq, k)
+    result.kmers.alt_kmers = kmerize(result.sequences.alt_seq, k)
   elif variant_type == "INV":
     raise newException(ValueError,
     "Error: Inversion processing not implemented.")
-  var combined_sequence = right_flank & inner_seq & left_flank
 
-  var pos_seq: PositionedSequence
-  pos_seq.position = int32(variant.start) - int32(len(right_flank))
-  pos_seq.chrom = $variant.CHROM
-  pos_seq.sequence = combined_sequence
-
-  return pos_seq
+  result.position = int32(variant.start) - int32(len(right_flank))
+  result.chrom = $variant.CHROM
 
 
 proc compose_variants*(variant_file: string, reference_file: string): seq[
