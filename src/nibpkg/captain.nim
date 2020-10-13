@@ -4,6 +4,7 @@ import svidx
 import strformat
 import mainLookup
 import classify
+import reporter
 
 proc main_runner*(variants_fn, refSeq_fn, prefix, reads_fn: string, kmerSize: int = 21, spacedSeeds : bool = false, space: int = 50, preIndex : bool = false, flank: int = 100) =
     ## Main program to type SVs
@@ -21,6 +22,11 @@ proc main_runner*(variants_fn, refSeq_fn, prefix, reads_fn: string, kmerSize: in
     echo "final idx contains: {finalIdx.len} forward and reverse SV kmers.".fmt
 
     let classifyCount = classify_file(reads_fn, finalIdx, kmerSize, spacedSeeds, space)
+
+    echo "reporting variants."
+
+    report(variants_fn, classifyCount, prefix)
+
 
     echo "nibbleSV finished without problems, goodbye!"
 
