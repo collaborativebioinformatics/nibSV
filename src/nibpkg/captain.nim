@@ -13,6 +13,7 @@ proc main_runner*(variants_fn, refSeq_fn, prefix, reads_fn: string, kmerSize: in
     if(not preIndex):
         echo "building an SV kmer DB."
         var svs = buildSVIdx(refSeq_fn, variants_fn, flank, kmerSize)
+        echo "updating reference kmer counts."
         updateSvIdx(refSeq_fn, svs, kmerSize, 1000000, spacedSeeds, space)
         dumpIdxToFile(svs, dumpedIdx)
     else:
@@ -26,7 +27,6 @@ proc main_runner*(variants_fn, refSeq_fn, prefix, reads_fn: string, kmerSize: in
     echo "reporting variants."
 
     report(variants_fn, classifyCount, prefix)
-
 
     echo "nibbleSV finished without problems, goodbye!"
 
