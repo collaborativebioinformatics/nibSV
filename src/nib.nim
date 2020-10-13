@@ -1,6 +1,7 @@
 from nibpkg/compose import nil
 from nibpkg/refmers import nil
 from nibpkg/mainLookup import nil
+from nibpkg/classify import nil
 
 when isMainModule:
   import cligen
