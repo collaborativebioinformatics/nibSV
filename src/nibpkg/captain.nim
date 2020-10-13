@@ -19,6 +19,7 @@ proc main_runner*(variants_fn, refSeq_fn, prefix, reads_fn: string, kmerSize: in
     else:
         dumpedIdx = variants_fn
 
+    echo "loading final index."
     let finalIdx = loadIdxFromFile(dumpedIdx)
     echo "final idx contains: {finalIdx.len} forward and reverse SV kmers.".fmt
 
