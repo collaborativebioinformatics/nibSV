@@ -11,5 +11,5 @@ when isMainModule:
         [refmers.showCounts, cmdName="count"],
         [mainLookup.buildSVIdx, cmdName="lookup"],
         [classify.main_classify, cmdName="classify"],
-        [captain.all_aboard, cmdName="main"],
+        [captain.main_runner, cmdName="main"],
   )
