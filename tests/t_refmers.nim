@@ -2,7 +2,6 @@
 from nibpkg/refmers import nil
 import unittest
 
-suite "welcome":
-  test "home":
+suite "refmers":
+  test "something":
     assert 1 == 1
-
