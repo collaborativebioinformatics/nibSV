@@ -357,12 +357,6 @@ proc search*(target: spot_t; query: pot_t): deques.Deque[seed_pair_t] =
 proc nuniq*(pot: spot_t): int =
     return len(pot.ht)
 
-
-
-proc test_FS*(pot: pot_t) =
-    for i in pot.seeds:
-        echo bin_to_dna(i.kmer,pot.word_size,i.strand)
-
 proc spacing_kmer*(pot:pot_t,space: int): pot_t =
     #doAssert(space > int(pot.word_size)) # typical, but not necessary
     doAssert(pot.word_size <= 16)

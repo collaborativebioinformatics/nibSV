@@ -114,12 +114,16 @@ suite "kmer order":
             check (kms.seeds[i].pos > lv)
             lv = kms.seeds[i].pos
 
+#proc test_FS*(pot: pot_t) =
+#    for i in pot.seeds:
+#        echo bin_to_dna(i.kmer,pot.word_size,i.strand)
+
 suite "sparse_seeds":
 
     let dna = "CCCGAAAGTTT"
     let kms = kmers.dna_to_kmers(dna, 4)
 
-    #kmers.test_FS(kms)
+    #test_FS(kms)
 
     test "spaced-seeds":
         let test_seeds= kmers.spacing_kmer(kms, 3)
