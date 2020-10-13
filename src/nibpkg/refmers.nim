@@ -21,27 +21,18 @@ iterator createdChunks(fai: Fai, chunk_size: int): Chunk =
         for j in countup(0, chrom_len, chunk_size):
             yield Chunk(chrom_name: chrom_name, chrom_start: j, chrom_end: j + chunk_size)
 
-proc buildKmerCountTable(full_sequence: string, kmer_size: int = 21, spacedSeeds: bool = false, space: int = 50): CountTableRef[uint64] =
+proc addRefCount(svKmers: svIdx, full_sequence: string, kmer_size: int = 21, spacedSeeds: bool = false, space: int = 50) =
     var convertedKmers: pot_t = dna_to_kmers(full_sequence, kmer_size)
     if(spacedSeeds):
         convertedKmers = spacing_kmer(convertedKmers, space)
-    result = newCountTable[uint64](8)
-    for k in convertedKmers.seeds:
-        result.inc(k.kmer)
 
-proc countByChunk(fai: Fai, chunk: Chunk, kmer_size: int = 21, spacedSeeds: bool = false, space: int = 50): CountTableRef[uint64] =
+    for km in convertedKmers.seeds:
+      if km.kmer in svKmers:
+        svKmers[km.kmer].refCount.inc
+
+proc updateChunk(svKmers: svIdx, fai: Fai, chunk: Chunk, kmer_size: int = 21, spacedSeeds: bool = false, space: int = 50) =
     var sub_seq = fai.get(chunk.chrom_name, chunk.chrom_start, chunk.chrom_end)
-    result = buildKmerCountTable(sub_seq, kmer_size, spacedSeeds, space)
-
-proc showCounts*(input_fn: string, kmer_size: int = 21, chunk_size: int = 1000000, spacedSeeds: bool = false, space: int = 50) =
-    ##Walk over reference sequences and count kmers.
-    var fai: Fai
-    if not fai.open(input_fn):
-        quit "couldn't open fasta"
-
-    for i in createdChunks(fai, chunk_size):
-        let chunkCount = countByChunk(fai, i, kmer_size, spacedSeeds, space)
-        echo(chunkCount)
+    addRefCount(svKmers, sub_seq, kmer_size, spacedSeeds, space)
 
 proc updateSvIdx*(input_ref_fn: string, svKmers: svIdx, kmer_size: int = 21, chunk_size: int = 1000000, spacedSeeds: bool = false, space: int = 50) =
     ##Walk over reference sequences and count kmers.
@@ -51,17 +42,23 @@ proc updateSvIdx*(input_ref_fn: string, svKmers: svIdx, kmer_size: int = 21, chu
         quit "couldn't open fasta"
 
     for i in createdChunks(fai, chunk_size):
-        let chunkCount = countByChunk(fai, i, kmer_size, spacedSeeds, space)
-        addRefCount(chunkCount, svKmers)
+        updateChunk(svKmers, fai, i, kmer_size, spacedSeeds, space)
 
 when isMainModule:
   import hts
   var fai:Fai
+  import times
 
   if not fai.open("/data/human/g1k_v37_decoy.fa"):
     quit "bad"
 
   var s = fai.get("22")
+  var svkmers:svIdx
+  new(svkmers)
+  echo "starting"
+  for i in countup(0, 100_000_000, 10):
+    svkmers[i.uint64] = (0'u32, 0'u32, newSeq[uint32]())
 
-  var t = s.buildKmerCountTable()
-  echo t.len
+  var t0 = cpuTime()
+  svKmers.addRefCount(s)
+  echo "time:", cpuTime() - t0
