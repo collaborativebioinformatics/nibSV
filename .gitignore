@@ -1,5 +1,6 @@
 /nimbleDir
 /nib
 /src/nib
+.DS_Store
 tests/test_read
 tests/test_svidx

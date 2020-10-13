@@ -356,3 +356,31 @@ proc search*(target: spot_t; query: pot_t): deques.Deque[seed_pair_t] =
 #
 proc nuniq*(pot: spot_t): int =
     return len(pot.ht)
+
+proc spacing_kmer*(pot:pot_t,space: int): pot_t =
+    #doAssert(space > int(pot.word_size)) # typical, but not necessary
+    doAssert(pot.word_size <= 16)
+
+    new(result) #default return knwos the type from function header
+    result.word_size = pot.word_size*2
+
+    for i in (0 ..< pot.seeds.len - 2*(space + pot.word_size.int)):
+        let j = i + 2*(space + pot.word_size.int)
+        assert(j < pot.seeds.len)
+
+        let k1 = pot.seeds[i]
+        let k2 = pot.seeds[j]
+        assert(k1.strand == k2.strand)
+
+        # new kmer
+        var k : seed_t
+        let (left, right) = if k1.strand == forward:
+            (k1, k2)
+        else:
+            (k2, k1)
+        k.kmer = left.kmer
+        k.kmer = k.kmer << 2*pot.word_size
+        k.kmer = k.kmer or right.kmer
+        k.strand = left.strand
+        k.pos = left.pos
+        result.seeds.add(k)

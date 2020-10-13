@@ -113,3 +113,40 @@ suite "kmer order":
         for i in countup(2, kms.seeds.len - 2, 2):
             check (kms.seeds[i].pos > lv)
             lv = kms.seeds[i].pos
+
+#proc test_FS*(pot: pot_t) =
+#    for i in pot.seeds:
+#        echo bin_to_dna(i.kmer,pot.word_size,i.strand)
+
+suite "sparse_seeds":
+
+    let dna = "CCCGAAAGTTT"
+    let kms = kmers.dna_to_kmers(dna, 4)
+
+    #test_FS(kms)
+
+    test "spaced-seeds":
+        let test_seeds= kmers.spacing_kmer(kms, 3)
+
+        #echo dna.len, " ", test_seeds.seeds.len
+
+        # 11 (dna len) - 2*4 (2 kmer lens) == 3
+        # So with a space of 3, we have exactly 1 forward and 1 reverse seed.
+        check(test_seeds.seeds.len == 2)
+
+        block:  # forward seed
+            let x = 0
+            let i = test_seeds.seeds[x]
+            var myDNA = kmers.bin_to_dna(i.kmer ,test_seeds.word_size,i.strand)
+            #echo fmt"{myDNA} {dna} {test_seeds.word_size} {i.strand}"
+            check((myDNA.len mod 2) == 0 )
+            check(myDNA == "CCCGGTTT")
+            check(i.strand == kmers.forward)
+        block:  # reverse seed
+            let x = 1
+            let i = test_seeds.seeds[x]
+            var myDNA = kmers.bin_to_dna(i.kmer ,test_seeds.word_size,i.strand)
+            #echo fmt"{myDNA} {dna} {test_seeds.word_size} {i.strand}"
+            check((myDNA.len mod 2) == 0 )
+            check(myDNA == "CCCGGTTT")
+            check(i.strand == kmers.reverse)
