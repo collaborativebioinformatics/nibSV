@@ -5,7 +5,7 @@ import hts
 ## N.B.: Add a function that takes a BAM path and returns the sample name
 ## 
 ## TODO: Add a function that handles genotypes using the svIdx's ref/alt count fields.
-proc report*(vcf_name : string, sv_read_supports : CountTable[uint32], sample_name : string="SAMPLE") =
+proc report*(vcf_name : string, sv_read_supports : CountTableRef[uint32], sample_name : string="SAMPLE") =
     ## Query SV supports for each SV in a VCF, appending the sample name to a field in the INFO fileds if
     ## the SV is present in the sample (i.e., SV support count > 1)
     var variants:VCF
@@ -21,7 +21,7 @@ proc report*(vcf_name : string, sv_read_supports : CountTable[uint32], sample_na
     var sample_name = sample_name
     var sv_id :uint32= 0
     for v in variants:
-        var sv_support_count = sv_read_supports.getOrDefault(sv_id)
+        var sv_support_count = sv_read_supports.getOrDefault(sv_id, -1)
         if sv_support_count > 0:
             doAssert v.info.set("SAMPLES_WITH_SV", sample_name) == Status.OK
 
