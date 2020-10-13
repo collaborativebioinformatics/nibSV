@@ -3,3 +3,4 @@
 include "t_kmers.nim"
 include "t_util.nim"
 include "t_welcome.nim"
+import  ./test_read.nim
