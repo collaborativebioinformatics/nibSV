@@ -1,5 +1,6 @@
 import unittest
 import nibpkg/svidx
+import tables
 
 suite "svidx suite":
  test "that sv insertion works":
