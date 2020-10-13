@@ -1,11 +1,12 @@
 import tables
 import hts
+import svidx
 
 
 ## N.B.: Add a function that takes a BAM path and returns the sample name
 ## 
 ## TODO: Add a function that handles genotypes using the svIdx's ref/alt count fields.
-proc report*(vcf_name : string, sv_read_supports : CountTableRef[uint32], sample_name : string="SAMPLE") =
+proc report*(vcf_name : string, sv_read_supports : CountTableRef[uint32], sv_idex : svIdx, sample_name : string="SAMPLE") =
     ## Query SV supports for each SV in a VCF, appending the sample name to a field in the INFO fileds if
     ## the SV is present in the sample (i.e., SV support count > 1)
     var variants:VCF

@@ -25,7 +25,7 @@ proc main_runner*(variants_fn, refSeq_fn, prefix, reads_fn: string, kmerSize: in
 
     echo "reporting variants."
 
-    report(variants_fn, classifyCount, prefix)
+    report(variants_fn, classifyCount, finalIdx, prefix)
 
 
     echo "nibbleSV finished without problems, goodbye!"
