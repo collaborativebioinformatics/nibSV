@@ -12,35 +12,35 @@ A kmer based method for detecting a panel of known SVs in new genomes.
 ## Website (if applicable)
 
 ## Intro statement
-Structural variation (SV) are the largest source of genetic variation within the human population. Long read DNA sequencing is becoming the preferred method for discovering structural variants. Structural variation can be longer than a short-read (<500bp) DNA trace, meaning the SV allele is not contained, which causes challanges and problems in the detection. Nevertheless, short reads are the way to go to obtain robust allele frequencies accross a population.
+Structural variation (SV) are the largest source of genetic variation within the human population. Long read DNA sequencing is becoming the preferred method for discovering structural variants. Structural variation can be longer than a short-read (<500bp) DNA trace, meaning the SV allele is not contained, which causes challenges and problems in the detection. Nevertheless, short reads are the way to go to obtain robust allele frequencies across a population.
 
 ## What's the problem?
 These long differences in DNA are harder to detect computationally, due to alignment, and sequence context. Pacifiic Biosciences HiFi reads are long (~10-20kb) and accurate (phred QV > 20). HiFi reads have the ability to identify a wide range of SV because they encapsulate the SV length spectrum. There are a number of good software tools to detect structural variants in HiFi data: Sniffles, PBSV, and others. Using these SV calls as priors we are going to identify kmers that can be used as SV specific markers. Building a database of SV specific kmers will allow us to integrate the large number of short-read datasets.
 
 ## Why should we solve it?
 
-Who doesnt like to nibble on SV?
+Who doesn't like to nibble on SV?
 # What is <this software>?
 
-Overview Diagram
+![alt text](multimedia/nibSV.jpg)
 
 # How to use <this software>
 
 # Software Workflow Diagram
 Rough workflow  (Eric D):
 
-1. Parse a SV VCF file 
+1. Parse a SV VCF file
    Reconstitute alleles (adding flank to deletions and insertions)
    Build map/hash/set/vector of kmers that are present in SVs (SVnibs)
 2. Parse human reference genome generating another set of kmers (Brent)
-3. Remove SVnibs that are in the human reference genome. We cannot quickly type those SVs that are reference derived. This will remove many of the insertions: Alu’s lines ect. 
-4. Type. In this stage we will go through novel/new genomes and see if they contain the SVnibs. Account for frequency, and depth. 
+3. Remove SVnibs that are in the human reference genome. We cannot quickly type those SVs that are reference derived. This will remove many of the insertions: Alu’s lines ect.
+4. Type. In this stage we will go through novel/new genomes and see if they contain the SVnibs. Account for frequency, and depth.
 
 How to make this rapid?
 
 Update VCF?
 
-# File structure diagram 
+# File structure diagram
 ## Input
 1. A Strucutural variant VCF
 2. An indexed FASTA file of the reference genome
@@ -75,7 +75,7 @@ The Docker image contains <this software> as well as a webserver and FTP server 
 
 # Testing
 
-We tested four different tools with <this software>. They can be found in [server/tools/](server/tools/) . 
+We tested four different tools with <this software>. They can be found in [server/tools/](server/tools/) .
 
 # Additional Functionality
 
@@ -87,7 +87,7 @@ We tested four different tools with <this software>. They can be found in [serve
   2. `cd server`
   3. `docker build --rm -t <this software>/<this software> .`
   4. `docker run -t -i <this software>/<this software>`
-  
+
 ### Website
 
 There is also a Docker image for hosting the main website. This should only be used for debug purposes.
@@ -96,4 +96,3 @@ There is also a Docker image for hosting the main website. This should only be u
   2. `cd Website`
   3. `docker build --rm -t <this software>/website .`
   4. `docker run -t -i <this software>/website`
-  
