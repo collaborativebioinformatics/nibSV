@@ -116,19 +116,33 @@ suite "kmer order":
 
 suite "sparse_seeds":
 
-    let dna = "CCCCCCCCCCCCCCCCCCCTTTTTTTTTTTTTTTTTTTTTTT"
-    let kms = kmers.dna_to_kmers(dna, 11)
+    let dna = "CCCGAAAGTTT"
+    let kms = kmers.dna_to_kmers(dna, 4)
 
     #kmers.test_FS(kms)
 
-    test "spaced seeds ":
-        let test_seeds= kmers.spacing_kmer(kms,25)
+    test "spaced-seeds":
+        let test_seeds= kmers.spacing_kmer(kms, 3)
 
-        echo dna.len, " ", test_seeds.seeds.len
+        #echo dna.len, " ", test_seeds.seeds.len
 
-        var count : int = 0
-        for i in test_seeds.seeds:
-            var myDNA = kmers.bin_to_dna(i.kmer,test_seeds.word_size,i.strand)
+        # 11 (dna len) - 2*4 (2 kmer lens) == 3
+        # So with a space of 3, we have exactly 1 forward and 1 reverse seed.
+        check(test_seeds.seeds.len == 2)
+
+        block:  # forward seed
+            let x = 0
+            let i = test_seeds.seeds[x]
+            var myDNA = kmers.bin_to_dna(i.kmer ,test_seeds.word_size,i.strand)
+            #echo fmt"{myDNA} {dna} {test_seeds.word_size} {i.strand}"
             check((myDNA.len mod 2) == 0 )
-            echo myDNA, " ", dna
-            count.inc
+            check(myDNA == "CCCGGTTT")
+            check(i.strand == kmers.forward)
+        block:  # reverse seed
+            let x = 1
+            let i = test_seeds.seeds[x]
+            var myDNA = kmers.bin_to_dna(i.kmer ,test_seeds.word_size,i.strand)
+            #echo fmt"{myDNA} {dna} {test_seeds.word_size} {i.strand}"
+            check((myDNA.len mod 2) == 0 )
+            check(myDNA == "CCCGGTTT")
+            check(i.strand == kmers.reverse)
