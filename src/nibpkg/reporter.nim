@@ -28,8 +28,11 @@ proc report*(vcf_name : string, sv_read_supports : CountTableRef[uint32], sv_ind
     var sv_id :uint32= 0
     for v in variants:
         var sv_support_count = sv_read_supports.getOrDefault(sv_id, -1)
-        var sv_ref_k_count = sv_index[sv_id].refCount.int
-        var sv_alt_k_count = sv_index[sv_id].altCount.int
+        var sv_ref_k_count = 0
+        var sv_alt_k_count = 0 
+        if sv_id in sv_index:
+            sv_ref_k_count = sv_index[sv_id].refCount.int
+            sv_alt_k_count = sv_index[sv_id].altCount.int
         doAssert v.info.set("NIB_SV_REF_KMERIDX_COUNT", sv_ref_k_count) == Status.OK
         doAssert v.info.set("NIB_SV_ALT_KMERIDX_COUNT", sv_alt_k_count) == Status.OK
         if sv_support_count > 0:
