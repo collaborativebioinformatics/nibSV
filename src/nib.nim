@@ -2,6 +2,7 @@ from nibpkg/compose import nil
 from nibpkg/mainLookup import nil
 from nibpkg/classify import nil
 from nibpkg/captain import nil
+from nibpkg/svidx import nil
 
 when isMainModule:
   import cligen
@@ -10,4 +11,5 @@ when isMainModule:
         [mainLookup.buildSVIdx, cmdName = "lookup"],
         [classify.main_classify, cmdName = "classify"],
         [captain.main_runner, cmdName = "main"],
+        [svidx.run],
   )

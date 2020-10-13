@@ -19,32 +19,37 @@ iterator createdChunks(fai: Fai, chunk_size: int): Chunk =
     for i in 0..<fai.len:
         let chrom_name = fai[i]
         let chrom_len = fai.chrom_len(chrom_name)
-        for j in countup(0, chrom_len, chunk_size):
-            yield Chunk(chrom_name: chrom_name, chrom_start: j, chrom_end: j + chunk_size)
+        let step = max(chrom_len, chunk_size)
+        for j in countup(0, chrom_len, step):
+            yield Chunk(chrom_name: chrom_name, chrom_start: j, chrom_end: j + step)
 
-proc addRefCount(svKmers: svIdx, full_sequence: string, kmer_size: int = 21, spacedSeeds: bool = false, space: int = 50) =
+proc addRefCount(svKmers: svIdx, full_sequence: string, kmer_size: int = 21, space = 0) =
+    ## Use spaced-seeds if space > 0. (Try 50.)
     var convertedKmers: pot_t = dna_to_kmers(full_sequence, kmer_size)
-    if(spacedSeeds):
+    if space > 0:
         convertedKmers = spacing_kmer(convertedKmers, space)
+    #for seed in convertedKmers.seeds:
+    #    echo "btd:", bin_to_dna(seed.kmer, convertedKmers.word_size, seed.strand), ' ', seed.kmer
 
     for km in convertedKmers.seeds:
       if km.kmer in svKmers:
         svKmers[km.kmer].refCount.inc
 
-proc updateChunk(svKmers: svIdx, fai: Fai, chunk: Chunk, kmer_size: int = 21, spacedSeeds: bool = false, space: int = 50) =
+proc updateChunk(svKmers: svIdx, fai: Fai, chunk: Chunk, kmer_size: int, space: int) =
     var sub_seq = fai.get(chunk.chrom_name, chunk.chrom_start, chunk.chrom_end)
-    addRefCount(svKmers, sub_seq, kmer_size, spacedSeeds, space)
+    addRefCount(svKmers, sub_seq, kmer_size, space)
 
-proc updateSvIdx*(input_ref_fn: string, svKmers: svIdx, kmer_size: int = 21, chunk_size: int = 1000000, spacedSeeds: bool = false, space: int = 50) =
-    ##Walk over reference sequences and count kmers.
-    ##Update any existing svIdx entries with these counts.
+proc updateSvIdx*(input_ref_fn: string, svKmers: svIdx, kmer_size: int = 21, chunk_size: int = 1_000_000, space = 0) =
+    ## Walk over reference sequences and count kmers.
+    ## Update any existing svIdx entries with these counts.
+    ## Use spaced-seeds if space > 0. (Try 50.)
     var fai: Fai
     if not fai.open(input_ref_fn):
         quit "couldn't open fasta"
 
     for i in createdChunks(fai, chunk_size):
-        echo "i:", i
-        updateChunk(svKmers, fai, i, kmer_size, spacedSeeds, space)
+        echo " chunk i=", i
+        updateChunk(svKmers, fai, i, kmer_size, space)
 
 when isMainModule:
   import hts
