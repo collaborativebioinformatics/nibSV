@@ -24,7 +24,7 @@ proc classify_bam(filename: string, idx: svIdx, k: int = 25, spacedSeeds: bool =
 proc classify_file*(filename: string, idx: svIdx, k: int = 25, spacedSeeds: bool = false, space: int = 50): CountTableRef[uint32] =
 
     if endsWith(filename, ".bam"):
-        return classify_bam(filename, idx, k)
+        return classify_bam(filename, idx, k, spacedSeeds, space)
     else:
         quit("Error: only BAM input currently supported.")
 
