@@ -1,7 +1,7 @@
 import tables
 import hts
 
-proc report(vcf_name : string, sv_read_supports : CountTable[uint32], sample_name : string="SAMPLE") =
+proc report*(vcf_name : string, sv_read_supports : CountTable[uint32], sample_name : string="SAMPLE") =
     ## Query SV supports for each SV in a VCF, appending the sample name to a field in the INFO fileds if
     ## the SV is present in the sample (i.e., SV support count > 1)
     var variants:VCF
