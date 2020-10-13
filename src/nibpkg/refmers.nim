@@ -19,9 +19,9 @@ iterator createdChunks(fai: Fai, chunk_size: int): Chunk =
         let chrom_name = fai[i]
         let chrom_len = fai.chrom_len(chrom_name)
         for j in countup(0, chrom_len, chunk_size):
-            yield Chunk(chrom_name:chrom_name, chrom_start:j, chrom_end: j + chunk_size)
+            yield Chunk(chrom_name: chrom_name, chrom_start: j, chrom_end: j + chunk_size)
 
-proc buildKmerCountTable(full_sequence: string, kmer_size: int=21, spacedSeeds : bool = false, space : int = 50):CountTableRef[uint64] =
+proc buildKmerCountTable(full_sequence: string, kmer_size: int = 21, spacedSeeds: bool = false, space: int = 50): CountTableRef[uint64] =
     var convertedKmers: pot_t = dna_to_kmers(full_sequence, kmer_size)
     if(spacedSeeds):
         convertedKmers = spacing_kmer(convertedKmers, space)
@@ -29,12 +29,12 @@ proc buildKmerCountTable(full_sequence: string, kmer_size: int=21, spacedSeeds :
     for k in convertedKmers.seeds:
         result.inc(uint64(k.kmer))
 
-proc countByChunk(fai: Fai, chunk: Chunk, kmer_size: int=21, spacedSeeds: bool = false, space : int = 50):CountTableRef[uint64] =
+proc countByChunk(fai: Fai, chunk: Chunk, kmer_size: int = 21, spacedSeeds: bool = false, space: int = 50): CountTableRef[uint64] =
     new (result)
     var sub_seq = fai.get(chunk.chrom_name, chunk.chrom_start, chunk.chrom_end)
-    result = buildKmerCountTable(sub_seq, kmer_size, spacedSeeds, space )
+    result = buildKmerCountTable(sub_seq, kmer_size, spacedSeeds, space)
 
-proc showCounts*(input_fn: string, kmer_size: int=21, chunk_size: int=1000000, spacedSeeds: bool = false, space : int = 50) =
+proc showCounts*(input_fn: string, kmer_size: int = 21, chunk_size: int = 1000000, spacedSeeds: bool = false, space: int = 50) =
     ##Walk over reference sequences and count kmers.
     var fai: Fai
     if not fai.open(input_fn):
@@ -44,7 +44,7 @@ proc showCounts*(input_fn: string, kmer_size: int=21, chunk_size: int=1000000, s
         let chunkCount = countByChunk(fai, i, kmer_size, spacedSeeds, space)
         echo(chunkCount)
 
-proc updateSvIdx*(input_ref_fn: string, svKmers: svIdx, kmer_size: int=21, chunk_size: int=1000000, spacedSeeds: bool = false, space : int = 50) =
+proc updateSvIdx*(input_ref_fn: string, svKmers: svIdx, kmer_size: int = 21, chunk_size: int = 1000000, spacedSeeds: bool = false, space: int = 50) =
     ##Walk over reference sequences and count kmers.
     ##Update any existing svIdx entries with these counts.
     var fai: Fai

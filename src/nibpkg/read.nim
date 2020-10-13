@@ -6,11 +6,11 @@ import ./svidx
 
 type Read* = object
     ## key of svid, count of supporting kmers
-    compatible_SVs* : CountTable[uint32]
+    compatible_SVs*: CountTable[uint32]
 
-proc process_read*(s : string, idx : svIdx, k:int=25, spacedSeeds : bool = false, space : int = 50): Read =
+proc process_read*(s: string, idx: svIdx, k: int = 25, spacedSeeds: bool = false, space: int = 50): Read =
     # find SVs with kmers intersecting with those from this read.
-    var x : Read
+    var x: Read
     var kmers = Dna(s).dna_to_kmers(k)
     if(spacedSeeds):
         kmers = spacing_kmer(kmers, space)
@@ -20,9 +20,9 @@ proc process_read*(s : string, idx : svIdx, k:int=25, spacedSeeds : bool = false
             x.compatible_SVs.inc(c)
     return x
 
-proc filter_read_matches*(read : var Read, min_matches:int=2, winner_takes_all:bool=false) =
+proc filter_read_matches*(read: var Read, min_matches: int = 2, winner_takes_all: bool = false) =
     ## track sv with most kmer matches
-    var removables : seq[uint32]
+    var removables: seq[uint32]
     var max_sv = 0
     var max_kcnt = 0'u32
     for sv, kcnt in read.compatible_SVs:

@@ -5,7 +5,7 @@ import strformat
 import mainLookup
 import classify
 
-proc main_runner*(variants_fn, refSeq_fn, prefix, reads_fn: string, kmerSize: int = 21, spacedSeeds : bool = false, space: int = 50, preIndex : bool = false, flank: int = 100) =
+proc main_runner*(variants_fn, refSeq_fn, prefix, reads_fn: string, kmerSize: int = 21, spacedSeeds: bool = false, space: int = 50, preIndex: bool = false, flank: int = 100) =
     ## Main program to type SVs
     var dumpedIdx = "{prefix}.sv_kmers.msgpck".fmt
 
@@ -25,5 +25,5 @@ proc main_runner*(variants_fn, refSeq_fn, prefix, reads_fn: string, kmerSize: in
 
 
 when isMainModule:
-  import cligen
-  dispatch(main_runner)
+    import cligen
+    dispatch(main_runner)
