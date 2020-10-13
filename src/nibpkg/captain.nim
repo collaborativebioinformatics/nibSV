@@ -10,6 +10,7 @@ proc main_runner*(variants_fn, refSeq_fn, prefix, reads_fn: string, kmerSize: in
     var dumpedIdx = "{prefix}.sv_kmers.msgpck".fmt
 
     if(not preIndex):
+        echo "building an SV kmer DB."
         var svs = buildSVIdx(refSeq_fn, variants_fn, flank, kmerSize)
         updateSvIdx(refSeq_fn, svs, kmerSize, 1000000, spacedSeeds, space)
         dumpIdxToFile(svs, dumpedIdx)
@@ -17,10 +18,11 @@ proc main_runner*(variants_fn, refSeq_fn, prefix, reads_fn: string, kmerSize: in
         dumpedIdx = variants_fn
 
     let finalIdx = loadIdxFromFile(dumpedIdx)
-    echo "final idx contains: {finalIdx.len} forward and reverse SV kmers".fmt 
+    echo "final idx contains: {finalIdx.len} forward and reverse SV kmers.".fmt
 
     let classifyCount = classify_file(reads_fn, finalIdx, kmerSize, spacedSeeds, space)
 
+    echo "nibbleSV finished without problems, goodbye!"
 
 
 
