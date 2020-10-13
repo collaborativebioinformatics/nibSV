@@ -5,7 +5,7 @@ import ./mainLookup
 import ./read
 import ./svidx
 
-proc classify_bam(filename : string, idx : svIdx, k:int=25): CountTableRef[uint32] =
+proc classify_bam(filename : string, idx : svIdx, k:int=25, spacedSeeds : bool=false, space: int=50): CountTableRef[uint32] =
     new(result)
 
     var bamfile:Bam
@@ -15,13 +15,13 @@ proc classify_bam(filename : string, idx : svIdx, k:int=25): CountTableRef[uint3
     for record in bamfile:
         record.sequence(sequence)
 
-        var read_classification = process_read(sequence, idx, k)
+        var read_classification = process_read(sequence, idx, k, spacedSeeds, space)
         filter_read_matches(read_classification)
         for key, val in read_classification.compatible_SVs:
             result.inc(key, val)
 
 
-proc classify_file(filename : string, idx : svIdx, k:int=25): CountTableRef[uint32] =
+proc classify_file*(filename : string, idx : svIdx, k:int=25, spacedSeeds : bool = false, space : int =  50): CountTableRef[uint32] =
 
     if endsWith(filename, ".bam"):
         return classify_bam(filename, idx, k)
