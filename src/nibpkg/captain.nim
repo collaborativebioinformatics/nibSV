@@ -7,25 +7,28 @@ import mainLookup
 import classify
 import reporter
 
-proc main_runner*(variants_fn, refSeq_fn, prefix, reads_fn: string, kmerSize: int = 21, spacedSeeds : bool = false, space: int = 50, preIndex : bool = false, flank: int = 100) =
+proc main_runner*(variants_fn, refSeq_fn, reads_fn, prefix: string, index_fn = "", kmerSize: int = 21, spacedSeeds : bool = false, space: int = 50, flank: int = 100) =
     ## Main program to type SVs
-    var dumpedIdx = "{prefix}.sv_kmers.msgpck".fmt
+    var actual_index_fn = "{prefix}.sv_kmers.msgpck".fmt
+    var idx: svIdx
 
     # Make preindex an option to take the msgpack, precomputed.
     # In that case, skip this block.
-    if(not preIndex):
+    if "" == index_fn:
         echo "building an SV kmer DB."
-        var svs = buildSVIdx(refSeq_fn, variants_fn, flank, kmerSize)
+        idx = buildSVIdx(refSeq_fn, variants_fn, flank, kmerSize)
         echo "updating reference kmer counts."
-        updateSvIdx(refSeq_fn, svs, kmerSize, 1000000, spacedSeeds, space)
-        dumpIdxToFile(svs, dumpedIdx)
+        updateSvIdx(refSeq_fn, idx, kmerSize, 1000000, spacedSeeds, space)
+        echo "dumpIdxToFile:'", actual_index_fn, "'"
+        dumpIdxToFile(idx, actual_index_fn)
     else:
-        dumpedIdx = variants_fn
+        actual_index_fn = index_fn
+        echo "loadIdxFromFile:'", actual_index_fn, "'"
+        idx = loadIdxFromFile(actual_index_fn)
 
-    let finalIdx = loadIdxFromFile(dumpedIdx)
-    echo "final idx contains: {finalIdx.len} forward and reverse SV kmers.".fmt
+    echo "final idx contains: {idx.len} forward and reverse SV kmers.".fmt
 
-    let classifyCount = classify_file(reads_fn, finalIdx, kmerSize, spacedSeeds, space)
+    let classifyCount = classify_file(reads_fn, idx, kmerSize, spacedSeeds, space)
 
     echo "reporting variants."
 
