@@ -1,3 +1,4 @@
+# vim: sw=4 ts=4 sts=4 tw=0 et:
 import hts
 import kmers
 import tables
@@ -42,6 +43,7 @@ proc updateSvIdx*(input_ref_fn: string, svKmers: svIdx, kmer_size: int = 21, chu
         quit "couldn't open fasta"
 
     for i in createdChunks(fai, chunk_size):
+        echo "i:", i
         updateChunk(svKmers, fai, i, kmer_size, spacedSeeds, space)
 
 when isMainModule:

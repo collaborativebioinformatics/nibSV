@@ -1,3 +1,4 @@
+# vim: sw=4 ts=4 sts=4 tw=0 et:
 import compose
 import refmers
 import svidx
@@ -5,32 +6,35 @@ import strformat
 import mainLookup
 import classify
 import reporter
+from os import nil
 
-proc main_runner*(variants_fn, refSeq_fn, prefix, reads_fn: string, kmerSize: int = 21, spacedSeeds : bool = false, space: int = 50, preIndex : bool = false, flank: int = 100) =
-    ## Main program to type SVs
-    var dumpedIdx = "{prefix}.sv_kmers.msgpck".fmt
+proc main_runner*(variants_fn, refSeq_fn, reads_fn: string, prefix = "test", kmerSize: int = 21, spacedSeeds : bool = false, space: int = 50, flank: int = 100) =
+    ## Main program to type SVs.
+    ## If a file called "{prefix}.sv_kmers.msgpack" exists, use it.
+    ## Otherwise, generate it. (Slow.)
+    var index_fn = "{prefix}.sv_kmers.msgpck".fmt
+    var idx: svIdx
 
-    if(not preIndex):
+    if not os.existsFile(index_fn):
         echo "building an SV kmer DB."
-        var svs = buildSVIdx(refSeq_fn, variants_fn, flank, kmerSize)
-        updateSvIdx(refSeq_fn, svs, kmerSize, 1000000, spacedSeeds, space)
-        dumpIdxToFile(svs, dumpedIdx)
+        idx = buildSVIdx(refSeq_fn, variants_fn, flank, kmerSize)
+        echo "updating reference kmer counts."
+        updateSvIdx(refSeq_fn, idx, kmerSize, 1000000, spacedSeeds, space)
+        echo "dumpIdxToFile:'", index_fn, "'"
+        dumpIdxToFile(idx, index_fn)
     else:
-        dumpedIdx = variants_fn
+        echo "loadIdxFromFile:'", index_fn, "'"
+        idx = loadIdxFromFile(index_fn)
 
-    let finalIdx = loadIdxFromFile(dumpedIdx)
-    echo "final idx contains: {finalIdx.len} forward and reverse SV kmers.".fmt
+    echo "final idx contains: {idx.len} forward and reverse SV kmers.".fmt
 
-    let classifyCount = classify_file(reads_fn, finalIdx, kmerSize, spacedSeeds, space)
+    let classifyCount = classify_file(reads_fn, idx, kmerSize, spacedSeeds, space)
 
     echo "reporting variants."
 
     report(variants_fn, classifyCount, prefix)
 
-
     echo "nibbleSV finished without problems, goodbye!"
-
-
 
 
 when isMainModule:
