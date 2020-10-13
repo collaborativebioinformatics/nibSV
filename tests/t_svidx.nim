@@ -24,4 +24,3 @@ suite "svidx suite":
   for kmer, t in idx:
    check t.svs == @[2'u32]
    check t.refCount == 1'u32
-
