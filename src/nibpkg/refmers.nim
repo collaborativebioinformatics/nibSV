@@ -32,7 +32,7 @@ proc buildKmerCountTable(full_sequence: string, kmer_size: int=21, spacedSeeds :
 proc countByChunk(fai: Fai, chunk: Chunk, kmer_size: int=21, spacedSeeds: bool = false, space : int = 50):CountTableRef[uint64] =
     new (result)
     var sub_seq = fai.get(chunk.chrom_name, chunk.chrom_start, chunk.chrom_end)
-    result = buildKmerCountTable(sub_seq, kmer_size, spacedSeeds: bool = false, space : int = 50)
+    result = buildKmerCountTable(sub_seq, kmer_size, spacedSeeds, space )
 
 proc showCounts*(input_fn: string, kmer_size: int=21, chunk_size: int=1000000, spacedSeeds: bool = false, space : int = 50) =
     ##Walk over reference sequences and count kmers.
@@ -44,7 +44,7 @@ proc showCounts*(input_fn: string, kmer_size: int=21, chunk_size: int=1000000, s
         let chunkCount = countByChunk(fai, i, kmer_size, spacedSeeds, space)
         echo(chunkCount)
 
-proc updateSvIdx*(input_ref_fn: string, svKmers: svIdx, kmer_size: int=21, chunk_size: int=1000000) =
+proc updateSvIdx*(input_ref_fn: string, svKmers: svIdx, kmer_size: int=21, chunk_size: int=1000000, spacedSeeds: bool = false, space : int = 50) =
     ##Walk over reference sequences and count kmers.
     ##Update any existing svIdx entries with these counts.
     var fai: Fai
