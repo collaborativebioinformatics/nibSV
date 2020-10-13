@@ -21,7 +21,7 @@ proc classify_bam(filename : string, idx : svIdx, k:int=25): CountTableRef[uint3
             result.inc(key, val)
 
 
-proc classify_file(filename : string, idx : svIdx, k:int=25): CountTableRef[uint32] =
+proc classify_file*(filename : string, idx : svIdx, k:int=25): CountTableRef[uint32] =
 
     if endsWith(filename, ".bam"):
         return classify_bam(filename, idx, k)
