@@ -7,7 +7,7 @@ when isMainModule:
   import cligen
   dispatchMulti(
         [compose.compose_variants, cmdName = "compose"],
-        [mainLookup.buildSVIdx, cmdName = "lookup"],
+        [mainLookup.buildSvIndex, cmdName = "lookup"],
         [classify.main_classify, cmdName = "classify"],
         [captain.main_runner, cmdName = "main",
         help={
