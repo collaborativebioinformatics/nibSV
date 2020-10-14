@@ -15,7 +15,6 @@ proc filterRefKmers*(svKmers: svIdx, maxRefCount : uint32 ) =
     echo "before:", svKmers.len, " maxRefCount:", maxRefCount
     var toRemove : seq[uint64]
     for k, v in pairs(svKmers):
-        echo v
         if v.refCount > maxRefCount:
             toRemove.add(k)
     for k in toRemove:
