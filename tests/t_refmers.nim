@@ -9,17 +9,21 @@ const thisdir = system.currentSourcePath.rsplit(DirSep, 1)[0]
 
 let original = """
 {
-  "3": {
-    "refCount": 0,
-    "altCount": 0,
-    "svs": [
-    ]
-  },
-  "4": {
-    "refCount": 0,
-    "altCount": 0,
-    "svs": [
-    ]
+  "kmerSize": 3,
+  "counts":
+  {
+    "3": {
+      "refCount": 0,
+      "altCount": 0,
+      "svs": [
+      ]
+    },
+    "4": {
+      "refCount": 0,
+      "altCount": 0,
+      "svs": [
+      ]
+    }
   }
 }
 """
@@ -28,50 +32,62 @@ let original = """
 
 let expected = """
 {
-  "3": {
-    "refCount": 1,
-    "altCount": 0,
-    "svs": [
-    ]
-  },
-  "4": {
-    "refCount": 1,
-    "altCount": 0,
-    "svs": [
-    ]
+  "kmerSize": 3,
+  "counts":
+  {
+    "3": {
+      "refCount": 1,
+      "altCount": 0,
+      "svs": [
+      ]
+    },
+    "4": {
+      "refCount": 1,
+      "altCount": 0,
+      "svs": [
+      ]
+    }
   }
 }
 """
 
 let original_spaced = """
 {
-  "2244": {
-    "refCount": 0,
-    "altCount": 0,
-    "svs": [
-    ]
-  },
-  "3789": {
-    "refCount": 0,
-    "altCount": 0,
-    "svs": [
-    ]
+  "kmerSize": 3,
+  "counts":
+  {
+    "2244": {
+      "refCount": 0,
+      "altCount": 0,
+      "svs": [
+      ]
+    },
+    "3789": {
+      "refCount": 0,
+      "altCount": 0,
+      "svs": [
+      ]
+    }
   }
 }
 """
 let expected_spaced = """
 {
-  "2244": {
-    "refCount": 1,
-    "altCount": 0,
-    "svs": [
-    ]
-  },
-  "3789": {
-    "refCount": 1,
-    "altCount": 0,
-    "svs": [
-    ]
+  "kmerSize": 3,
+  "counts":
+  {
+    "2244": {
+      "refCount": 1,
+      "altCount": 0,
+      "svs": [
+      ]
+    },
+    "3789": {
+      "refCount": 1,
+      "altCount": 0,
+      "svs": [
+      ]
+    }
   }
 }
 """
@@ -79,8 +95,8 @@ let expected_spaced = """
 suite "refmers":
   let
     fn = thisDir & "/foo.fasta"
-  test "updateSvIdx":
-    var idx = svidx.loadIdxFromJson(original)
+  test "updateSvIndex":
+    var idx = svidx.loadIndexFromJson(original)
     #let path = os.absolutePath("tests/foo.fasta")
     # foo.fasta contains "GATTACA", which matches 2 3-mers from our index:
     #  "ACA" (==4 forward)
@@ -88,12 +104,12 @@ suite "refmers":
     var
       kmer_size = 3
       space = 0
-    refmers.updateSvIdx(fn, idx, kmer_size, 0, space=space)
+    refmers.updateSvIndex(fn, idx, kmer_size, 0, space=space)
     #echo "result:", svidx.dumpIdxtoJson(idx)
-    var result = svidx.dumpIdxtoJson(idx)
+    var result = svidx.dumpIndextoJson(idx)
     check json.parseJson(result) == json.parseJson(expected)
-  test "updateSvIdx_spaced":
-    var idx = svidx.loadIdxFromJson(original_spaced)
+  test "updateSvIndex_spaced":
+    var idx = svidx.loadIndexFromJson(original_spaced)
     #let path = os.absolutePath("tests/foo.fasta")
     # foo.fasta contains "GATTACA", which matches 2 3-mers:
     #  "GATACA" (==2244 forward)
@@ -101,7 +117,7 @@ suite "refmers":
     var
       kmer_size = 3
       space = 1
-    refmers.updateSvIdx(fn, idx, kmer_size, 0, space=space)
+    refmers.updateSvIndex(fn, idx, kmer_size, 0, space=space)
     #echo "result:", svidx.dumpIdxtoJson(idx)
-    var result = svidx.dumpIdxtoJson(idx)
+    var result = svidx.dumpIndextoJson(idx)
     check json.parseJson(result) == json.parseJson(expected_spaced)

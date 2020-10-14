@@ -19,7 +19,7 @@ type
         kmerSize*: uint8
 
 proc len*(idx: SvIndex): int =
-    return idx.len
+    return idx.counts.len
 
 proc dumpIndexToFile*(idx: SvIndex, fn: string) =
     let strm = openFileStream(fn, fmWrite)
