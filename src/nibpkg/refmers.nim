@@ -10,14 +10,14 @@ type
         chrom_start: int
         chrom_end: int
 
-proc filterRefKmers*(svKmers: svIdx, maxRefCount : uint32 ) =
+proc filterRefKmers*(svKmers: var SvIndex, maxRefCount : uint32 ) =
     ## Remove entries in the SV index that have a ref count higher than specified
     var toRemove : seq[uint64]
-    for k, v in pairs(svKmers):
+    for k, v in pairs(svKmers.counts):
         if v.refCount > maxRefCount:
             toRemove.add(k)
     for k in toRemove:
-       svKmers.del(k)
+       svKmers.counts.del(k)
 
 proc addRefCount(refKmers: CountTableRef[uint64], svKmers: svIdx) =
     for k, v in pairs(refKmers):
