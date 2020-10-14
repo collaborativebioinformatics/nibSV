@@ -2,7 +2,6 @@ from nibpkg/compose import nil
 from nibpkg/mainLookup import nil
 from nibpkg/classify import nil
 from nibpkg/captain import nil
-from nibpkg/svidx import nil
 
 when isMainModule:
   import cligen
@@ -23,5 +22,4 @@ when isMainModule:
         "max-ref-kmer-count" : "max number of reference kmers allowed in SV event"
         }
         ],
-        [svidx.run],
   )
