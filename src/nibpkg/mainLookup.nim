@@ -5,9 +5,12 @@ import tables
 import msgpack4nim, streams
 import ./svidx
 
-proc lookupKmer*(idx: svIdx, kmer: seed_t): seq[uint32] =
+var empty: seq[uint32]
+
+proc lookupKmer*(idx: svIdx, kmer: seed_t): seq[uint32] {.noInit.} =
   if kmer.kmer in idx:
-      return idx[kmer.kmer].svs
+    return idx[kmer.kmer].svs
+  return empty
 
 proc buildSVIdx*(reference_path: string, vcf_path: string, flank: int = 100, k: int = 25): svIdx =
 
