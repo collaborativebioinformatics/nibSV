@@ -12,7 +12,7 @@ proc lookupKmer*(idx: SvIndex, kmer: seed_t): seq[uint32] {.noInit.} =
     return idx.counts[kmer.kmer].svs
   return empty
 
-proc buildSVIdx*(reference_path: string, vcf_path: string, flank: int = 100, k: int = 25): SvIndex =
+proc buildSvIndex*(reference_path: string, vcf_path: string, flank: int = 100, k: int = 25): SvIndex =
   ## Open FASTA index
   var fai: Fai
   doAssert fai.open(reference_path), "Failed to open FASTA file: " & reference_path

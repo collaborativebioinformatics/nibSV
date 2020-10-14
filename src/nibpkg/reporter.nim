@@ -14,7 +14,7 @@ proc report*(vcf_name : string, sv_read_supports : CountTableRef[uint32], sv_ind
     echo "Writing report to output.vcf"
 
     var sv_to_kmer = initTable[uint32, seq[uint64]]()
-    for kmer, support in sv_index:
+    for kmer, support in sv_index.counts:
       for sv in support.svs:
         var a = sv_to_kmer.getOrDefault(sv)
         a.add(kmer)
