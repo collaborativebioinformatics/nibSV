@@ -3,9 +3,9 @@
 # Alternatively, use --nimbleDir:${NIMBLE_DIR} everywhere
 
 build:
-	nim c src/nib.nim
+	nim c src/nibsv.nim
 release:
-	nim c -d:release -d:danger src/nib.nim
+	nim c -d:release -d:danger src/nibsv.nim
 all:
 	${MAKE} install
 quick:
