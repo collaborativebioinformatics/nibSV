@@ -9,22 +9,22 @@ import reporter
 from os import nil
 from tables import len
 
-proc main_runner*(variants_fn, refSeq_fn, reads_fn: string, prefix = "test", kmerSize: int = 21, spacedSeeds : bool = false, space: int = 50, flank: int = 100) =
-    ## Main program to type SVs.
+proc main_runner*(variants_fn, refSeq_fn, reads_fn: string, prefix = "test", kmer_size: int = 25, spaced_seeds : bool = false, space: int = 50, flank: int = 100, maxRefKmerCount : uint32 = 0 ) =
+    ## Generate a SV kmer database, and genotype new samples.
     ## If a file called "{prefix}.sv_kmers.msgpack" exists, use it.
-    ## Otherwise, generate it. (Slow.)
+    ## Otherwise, generate it.
     var index_fn = "{prefix}.sv_kmers.msgpck".fmt
     var idx: svIdx
 
     if not os.existsFile(index_fn):
         echo "building an SV kmer DB."
-        idx = buildSVIdx(refSeq_fn, variants_fn, flank, kmerSize)
-        let sp = if spacedSeeds:
+        idx = buildSVIdx(refSeq_fn, variants_fn, flank, kmer_size)
+        let sp = if spaced_seeds:
           space
         else:
           0
         echo "updating reference kmer counts."
-        updateSvIdx(refSeq_fn, idx, kmerSize, 1000000, sp)
+        updateSvIdx(refSeq_fn, idx, kmer_size, 1000000, sp)
         echo "dumpIdxToFile:'", index_fn, "'"
         dumpIdxToFile(idx, index_fn)
     else:
@@ -33,9 +33,9 @@ proc main_runner*(variants_fn, refSeq_fn, reads_fn: string, prefix = "test", kme
 
     echo "final idx contains: {idx.len} forward and reverse SV kmers.".fmt
 
-    filterRefKmers(idx, 2 ) 
+    filterRefKmers(idx, maxRefKmerCount)
 
-    let classifyCount = classify_file(reads_fn, idx, kmerSize, spacedSeeds, space)
+    let classifyCount = classify_file(reads_fn, idx, kmer_size, spaced_seeds, space)
 
     echo "reporting variants."
 
