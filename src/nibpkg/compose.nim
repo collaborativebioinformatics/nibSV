@@ -42,8 +42,9 @@ proc compose*(variant: Variant, right_flank: string,
     result.kmers.ref_kmers = kmerize(result.sequences.ref_seq, k)
     result.kmers.alt_kmers = kmerize(result.sequences.alt_seq, k)
   elif variant_type == "INV":
-    raise newException(ValueError,
-    "Error: Inversion processing not implemented.")
+    return
+    #raise newException(ValueError,
+    #"Error: Inversion processing not implemented.")
 
   result.position = int32(variant.start) - int32(len(right_flank))
   result.chrom = $variant.CHROM
