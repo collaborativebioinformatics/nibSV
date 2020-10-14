@@ -13,24 +13,13 @@ type
         svs*: seq[uint32]
 
     ## A map from KMER ID -> (number of time kmer appears in a ref seq, number of times kmer appears in an alt seq, list(SVs) that kmer is contained in )
-    svIdx* = TableRef[uint64, SvValue]
+    #svIdx* = TableRef[uint64, SvValue]
     SvIndex* = object
         counts*: Table[uint64, SvValue]
         kmerSize*: uint8
 
 proc len*(idx: SvIndex): int =
     return idx.len
-
-proc dumpIdxToFile*(idx: svIdx, fn: string) =
-    let strm = openFileStream(fn, fmWrite)
-    strm.pack(idx)
-    strm.close()
-
-proc loadIdxFromFile*(fn: string): svIdx =
-    new(result) # = newTable[uint64, tuple[refCount:uint32, altCount:uint32, svs:seq[uint32]]]()
-    let strm = openFileStream(fn, fmRead)
-    strm.unpack(result)
-    strm.close()
 
 proc dumpIndexToFile*(idx: SvIndex, fn: string) =
     let strm = openFileStream(fn, fmWrite)
@@ -41,26 +30,6 @@ proc loadIndexFromFile*(fn: string): SvIndex =
     let strm = openFileStream(fn, fmRead)
     strm.unpack(result)
     strm.close()
-
-proc `%`(idx: svIdx): JsonNode =
-    var t: svIdx
-    result = json.newJObject()
-    for k,v in idx.pairs():
-        let val = SvValue(refCount:v.refCount, altCount:v.altCount, svs:v.svs)
-        result[$k] = %val
-
-proc dumpIdxToJson*(idx: svIdx): string =
-    return json.pretty(%idx)
-
-proc loadIdxFromJson*(js: string): svIdx =
-    ## This painful method might become simple if svIdx values
-    ## switched from tuple to object.
-    new(result)
-    let j = json.parseJson(js)
-    for key,val in j:
-        let k:uint64 = strutils.parseBiggestUint(key)
-        let v = json.to(val, SvValue)
-        result[k] = v
 
 proc `%`(idx: SvIndex): JsonNode =
     result = json.newJObject()
@@ -82,26 +51,6 @@ proc loadIndexFromJson*(js: string): SvIndex =
         let k:uint64 = strutils.parseBiggestUint(key)
         let v = json.to(val, SvValue)
         result.counts[k] = v
-
-proc insert*(s: var svIdx, sequence: string, k: int, sv_idx: int = -1) =
-    ## when inserting reference sequences leave sv_idx as -1
-    var l = Dna(sequence).dna_to_kmers(k)
-
-    # inserting alternates
-    if sv_idx >= 0:
-        for kmer in l.seeds:
-            var kc = s.getOrDefault(kmer.kmer)
-            kc.altCount.inc
-            kc.svs.add(sv_idx.uint32)
-            s[kmer.kmer] = kc
-
-        return
-
-    # inserting reference counts iff the kmer was already found as alternate.
-    for kmer in l.seeds:
-        # note: sometimes doing double lookup.
-        if kmer.kmer notin s: continue
-        s[kmer.kmer].refCount.inc
 
 proc insert*(idx: var SvIndex, sequence: string, k: int, sv_idx: int = -1) =
     ## when inserting reference sequences leave sv_idx as -1
