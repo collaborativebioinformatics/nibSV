@@ -33,14 +33,16 @@ proc compose*(variant: Variant, right_flank: string,
     var deleted_bases : string = $variant.REF ## Chop the reference base prefix in the REF allele.
     result.sequences.ref_seq = left_flank & deleted_bases & right_flank
     result.sequences.alt_seq = left_flank & right_flank
-    result.kmers.ref_kmers = kmerize(result.sequences.ref_seq, k)
-    result.kmers.alt_kmers = kmerize(result.sequences.alt_seq, k)
+    if k > 0:
+      result.kmers.ref_kmers = kmerize(result.sequences.ref_seq, k)
+      result.kmers.alt_kmers = kmerize(result.sequences.alt_seq, k)
   elif variant_type == "INS":
     var inserted_seq : string = variant.ALT[0][1 .. ^0] ## Chop the reference base prefix in the ALT allele.
     result.sequences.ref_seq = left_flank & right_flank
     result.sequences.alt_seq = left_flank & inserted_seq & right_flank
-    result.kmers.ref_kmers = kmerize(result.sequences.ref_seq, k)
-    result.kmers.alt_kmers = kmerize(result.sequences.alt_seq, k)
+    if k > 0:
+      result.kmers.ref_kmers = kmerize(result.sequences.ref_seq, k)
+      result.kmers.alt_kmers = kmerize(result.sequences.alt_seq, k)
   elif variant_type == "INV":
     return
     #raise newException(ValueError,
