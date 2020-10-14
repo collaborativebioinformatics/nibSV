@@ -33,6 +33,8 @@ proc main_runner*(variants_fn, refSeq_fn, reads_fn: string, prefix = "test", kme
 
     echo "final idx contains: {idx.len} forward and reverse SV kmers.".fmt
 
+    filterRefKmers(idx, 2 ) 
+
     let classifyCount = classify_file(reads_fn, idx, kmerSize, spacedSeeds, space)
 
     echo "reporting variants."
