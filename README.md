@@ -65,3 +65,17 @@ A VCF file with a tag in INFO field identifying the present/ absance for each SV
 
 # Testing
 We have tested NibblerSV on HG002 from GIAB and various other control data sets.
+
+# Installation
+
+## Install Niim
+* https://nim-lang.org/install.html
+
+## Setup and build
+```sh
+make setup
+make build
+
+# Or for faster executable
+make release
+```
