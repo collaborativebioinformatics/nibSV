@@ -8,7 +8,7 @@ description   = "Structural Variant nibbles"
 license       = "BSD-3-Clause"
 srcDir        = "src"
 installDirs   = @["nibpkg"]
-bin           = @["nib"]
+bin           = @["nibsv"]
 
 
 # Dependencies
