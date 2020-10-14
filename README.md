@@ -4,7 +4,7 @@
 
 ## Contributors
 
-Brent Pederson<sup>1</sup>, Chris Dunn<sup>2</sup>, Eric Dawson<sup>3</sup>, Fritz Sedlazeck<sup>4</sup>, Peter Xie<sup>5</sup>, and Zev Kronenberg<sup>2</sup>
+Brent Pederson<sup>1</sup>, Christopher Dunn<sup>2</sup>, Eric Dawson<sup>3</sup>, Fritz Sedlazeck<sup>4</sup>, Peter Xie<sup>5</sup>, and Zev Kronenberg<sup>2</sup>
 
 <sup>1</sup> University of Utah; <sup>2</sup>PacBio; <sup>3</sup>Nvidia Corporation; <sup>4</sup>Baylor College of Medicine; <sup>5</sup>JBrowse (UC Berkeley);
 
@@ -70,6 +70,8 @@ We have tested NibblerSV on HG002 from GIAB and various other control data sets.
 
 ## Install Nim
 * https://nim-lang.org/install.html
+
+See also [README_NIM.md](README_NIM.md)
 
 ## Install htslib
 This needs to be available as a dynamically loadable library
