@@ -6,11 +6,14 @@ import msgpack4nim, streams, json
 import ./kmers
 
 type
-    SvValue* = tuple[refCount: uint32, altCount: uint32, svs: seq[uint32]]
+    #SvValue* = tuple[refCount: uint32, altCount: uint32, svs: seq[uint32]]
+    SvValue* = object
+        refCount*: uint32
+        altCount*: uint32
+        svs*: seq[uint32]
 
     ## A map from KMER ID -> (number of time kmer appears in a ref seq, number of times kmer appears in an alt seq, list(SVs) that kmer is contained in )
     svIdx* = TableRef[uint64, SvValue]
-    # TODO: Use object instead of tuple, for easier serialization.
 
 proc dumpIdxToFile*(idx: svIdx, fn: string) =
     let strm = openFileStream(fn, fmWrite)
@@ -24,16 +27,10 @@ proc loadIdxFromFile*(fn: string): svIdx =
     strm.close()
 
 proc `%`(idx: svIdx): JsonNode =
-    type
-        Value = object
-            refCount: uint32
-            altCount: uint32
-            svs: seq[uint32]
-        Index = Table[string, Value]
-    var t: Index
-    result = %t
+    var t: svIdx
+    result = json.newJObject()
     for k,v in idx.pairs():
-        let val = Value(refCount:v.refCount, altCount:v.altCount, svs:v.svs)
+        let val = SvValue(refCount:v.refCount, altCount:v.altCount, svs:v.svs)
         result[$k] = %val
 
 proc dumpIdxToJson*(idx: svIdx): string =
@@ -45,25 +42,9 @@ proc loadIdxFromJson*(js: string): svIdx =
     new(result)
     let j = json.parseJson(js)
     for key,val in j:
-        var svs: seq[uint32]
-        for sv in val["svs"].getElems():
-            svs.add(sv.getInt().uint32)
-        let v:SvValue = (
-            refCount: val["refCount"].getInt().uint32,
-            altCount: val["altCount"].getInt().uint32,
-            svs: svs)
         let k:uint64 = strutils.parseBiggestUint(key)
+        let v = json.to(val, SvValue)
         result[k] = v
-
-proc run*() =
-    var idx: svIdx
-    new(idx)
-    var v: SvValue = (0'u32, 0'u32, @[0'u32, 1'u32])
-    idx[42] = v
-    idx[41] = v
-    idx[43] = v
-    idx[40] = v
-    echo dumpIdxToJson(idx)
 
 proc insert*(s: var svIdx, sequence: string, k: int, sv_idx: int = -1) =
     ## when inserting reference sequences leave sv_idx as -1
