@@ -19,7 +19,10 @@ iterator createdChunks(fai: Fai, chunk_size: int): Chunk =
     for i in 0..<fai.len:
         let chrom_name = fai[i]
         let chrom_len = fai.chrom_len(chrom_name)
-        let step = max(chrom_len, chunk_size)
+        let step = if chunk_size <= 0:
+            chrom_len  # typically small in this case
+        else:
+            chunk_size
         for j in countup(0, chrom_len, step):
             yield Chunk(chrom_name: chrom_name, chrom_start: j, chrom_end: j + step)
 
