@@ -27,16 +27,10 @@ proc loadIdxFromFile*(fn: string): svIdx =
     strm.close()
 
 proc `%`(idx: svIdx): JsonNode =
-    type
-        Value = object
-            refCount: uint32
-            altCount: uint32
-            svs: seq[uint32]
-        Index = Table[string, Value]
-    var t: Index
-    result = %t
+    var t: svIdx
+    result = json.newJObject()
     for k,v in idx.pairs():
-        let val = Value(refCount:v.refCount, altCount:v.altCount, svs:v.svs)
+        let val = SvValue(refCount:v.refCount, altCount:v.altCount, svs:v.svs)
         result[$k] = %val
 
 proc dumpIdxToJson*(idx: svIdx): string =
