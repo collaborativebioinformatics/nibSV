@@ -11,7 +11,7 @@ proc report*(vcf_name : string, sv_read_supports : CountTableRef[uint32], sv_ind
     ## the SV is present in the sample (i.e., SV support count > 1)
     var variants:VCF
     doAssert open(variants, vcf_name)
-    echo "report"
+    echo "Writing report to output.vcf"
 
     var sv_to_kmer = initTable[uint32, seq[uint64]]()
     for kmer, support in sv_index:
