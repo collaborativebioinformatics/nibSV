@@ -68,8 +68,14 @@ We have tested NibblerSV on HG002 from GIAB and various other control data sets.
 
 # Installation
 
-## Install Niim
+## Install Nim
 * https://nim-lang.org/install.html
+
+## Install htslib
+This needs to be available as a dynamically loadable library
+on your system.
+
+* http://www.htslib.org/download/
 
 ## Setup and build
 ```sh
