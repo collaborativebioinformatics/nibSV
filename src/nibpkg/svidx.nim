@@ -59,6 +59,27 @@ proc loadIdxFromJson*(js: string): svIdx =
         let v = json.to(val, SvValue)
         result[k] = v
 
+proc `%`(idx: SvIndex): JsonNode =
+    result = json.newJObject()
+    result["kmerSize"] = %idx.kmerSize
+    result["counts"] = json.newJObject()
+    for k,v in idx.counts.pairs():
+        let val = SvValue(refCount:v.refCount, altCount:v.altCount, svs:v.svs)
+        result["counts"][$k] = %val
+
+proc dumpIndexToJson*(idx: SvIndex): string =
+    return json.pretty(%idx)
+
+proc loadIndexFromJson*(js: string): SvIndex =
+    ## This painful method might become simple if SvIndex values
+    ## switched from tuple to object.
+    let j = json.parseJson(js)
+    result.kmerSize = j["kmerSize"].getInt().uint8
+    for key,val in j["counts"]:
+        let k:uint64 = strutils.parseBiggestUint(key)
+        let v = json.to(val, SvValue)
+        result.counts[k] = v
+
 proc insert*(s: var svIdx, sequence: string, k: int, sv_idx: int = -1) =
     ## when inserting reference sequences leave sv_idx as -1
     var l = Dna(sequence).dna_to_kmers(k)
