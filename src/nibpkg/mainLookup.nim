@@ -20,6 +20,8 @@ proc buildSVIdx*(reference_path: string, vcf_path: string, flank: int = 100, k: 
   var variants: VCF
   doAssert(open(variants, vcf_path))
 
+  result.kmerSize = k.uint8
+
   var sv_idx = 0
   echo "flank:", flank
   for v in variants:
