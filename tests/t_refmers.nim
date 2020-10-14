@@ -4,6 +4,8 @@ from nibpkg/svidx import nil
 import unittest
 import json
 import os
+import strutils
+const thisdir = system.currentSourcePath.rsplit(DirSep, 1)[0]
 
 let original = """
 {
@@ -75,6 +77,8 @@ let expected_spaced = """
 """
 
 suite "refmers":
+  let
+    fn = thisDir & "/foo.fasta"
   test "updateSvIdx":
     var idx = svidx.loadIdxFromJson(original)
     #let path = os.absolutePath("tests/foo.fasta")
@@ -82,11 +86,8 @@ suite "refmers":
     #  "ACA" (==4 forward)
     #  "ATT" (==3 reversed)
     var
-      fn = "foo.fasta"
       kmer_size = 3
       space = 0
-    if not fileExists(fn):
-      fn = "tests/foo.fasta"
     refmers.updateSvIdx(fn, idx, kmer_size, 0, space=space)
     #echo "result:", svidx.dumpIdxtoJson(idx)
     var result = svidx.dumpIdxtoJson(idx)
@@ -98,11 +99,8 @@ suite "refmers":
     #  "GATACA" (==2244 forward)
     #  "GATACA" (==3789 reversed)
     var
-      fn = "foo.fasta"
       kmer_size = 3
       space = 1
-    if not fileExists(fn):
-      fn = "tests/foo.fasta"
     refmers.updateSvIdx(fn, idx, kmer_size, 0, space=space)
     #echo "result:", svidx.dumpIdxtoJson(idx)
     var result = svidx.dumpIdxtoJson(idx)
