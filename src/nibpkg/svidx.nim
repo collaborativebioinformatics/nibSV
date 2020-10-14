@@ -42,14 +42,8 @@ proc loadIdxFromJson*(js: string): svIdx =
     new(result)
     let j = json.parseJson(js)
     for key,val in j:
-        var svs: seq[uint32]
-        for sv in val["svs"].getElems():
-            svs.add(sv.getInt().uint32)
-        let v = SvValue(
-            refCount: val["refCount"].getInt().uint32,
-            altCount: val["altCount"].getInt().uint32,
-            svs: svs)
         let k:uint64 = strutils.parseBiggestUint(key)
+        let v = json.to(val, SvValue)
         result[k] = v
 
 proc insert*(s: var svIdx, sequence: string, k: int, sv_idx: int = -1) =
