@@ -12,8 +12,8 @@ proc process_read*(s: string, idx: svIdx, k: int = 25, spacedSeeds: bool = false
     # find SVs with kmers intersecting with those from this read.
     var x: Read
     var kmers = Dna(s).dna_to_kmers(k)
-    if(spacedSeeds):
-        kmers = spacing_kmer(kmers, space)
+    #if(spacedSeeds):
+    #    kmers = spacing_kmer(kmers, space)
     for kmer in kmers.seeds:
         var matching_svs = idx.lookupKmer(kmer)
         for c in matching_svs:

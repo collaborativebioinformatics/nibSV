@@ -10,6 +10,15 @@ type
         chrom_start: int
         chrom_end: int
 
+proc filterRefKmers*(svKmers: svIdx, maxRefCount : uint32 ) =
+    ## Remove entries in the SV index that have a ref count higher than specified
+    var toRemove : seq[uint64]
+    for k, v in pairs(svKmers):
+        if v.refCount > maxRefCount:
+            toRemove.add(k)
+    for k in toRemove:
+       svKmers.del(k)
+
 proc addRefCount(refKmers: CountTableRef[uint64], svKmers: svIdx) =
     for k, v in pairs(refKmers):
         if svKmers.hasKey(k):
@@ -29,8 +38,8 @@ iterator createdChunks(fai: Fai, chunk_size: int): Chunk =
 proc addRefCount(svKmers: svIdx, full_sequence: string, kmer_size: int = 21, space = 0) =
     ## Use spaced-seeds if space > 0. (Try 50.)
     var convertedKmers: pot_t = dna_to_kmers(full_sequence, kmer_size)
-    if space > 0:
-        convertedKmers = spacing_kmer(convertedKmers, space)
+    #if space > 0:
+    #   convertedKmers = spacing_kmer(convertedKmers, space)
     #for seed in convertedKmers.seeds:
     #    echo "btd:", bin_to_dna(seed.kmer, convertedKmers.word_size, seed.strand), ' ', seed.kmer
 
