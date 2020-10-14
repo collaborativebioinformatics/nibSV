@@ -1,6 +1,9 @@
 /nimbleDir
 /nib
 /src/nib
+/src/nibsv
 .DS_Store
+*.dSYM
+*.msgpck
 tests/test_read
 tests/test_svidx
