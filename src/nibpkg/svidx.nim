@@ -14,6 +14,9 @@ type
 
     ## A map from KMER ID -> (number of time kmer appears in a ref seq, number of times kmer appears in an alt seq, list(SVs) that kmer is contained in )
     svIdx* = TableRef[uint64, SvValue]
+    SvIndex* = object
+        counts*: Table[uint64, SvValue]
+        kmerSize*: uint8
 
 proc dumpIdxToFile*(idx: svIdx, fn: string) =
     let strm = openFileStream(fn, fmWrite)
@@ -22,6 +25,16 @@ proc dumpIdxToFile*(idx: svIdx, fn: string) =
 
 proc loadIdxFromFile*(fn: string): svIdx =
     new(result) # = newTable[uint64, tuple[refCount:uint32, altCount:uint32, svs:seq[uint32]]]()
+    let strm = openFileStream(fn, fmRead)
+    strm.unpack(result)
+    strm.close()
+
+proc dumpIndexToFile*(idx: SvIndex, fn: string) =
+    let strm = openFileStream(fn, fmWrite)
+    strm.pack(idx)
+    strm.close()
+
+proc loadIndexFromFile*(fn: string): SvIndex =
     let strm = openFileStream(fn, fmRead)
     strm.unpack(result)
     strm.close()
