@@ -10,17 +10,16 @@ type
         chrom_start: int
         chrom_end: int
 
-proc filterRefKmers*(svKmers: svIdx, maxRefCount : uint32 ) =
+proc filterRefKmers*(svKmers: var SvIndex, maxRefCount : uint32 ) =
     ## Remove entries in the SV index that have a ref count higher than specified
     echo "before:", svKmers.len, " maxRefCount:", maxRefCount
     var toRemove : seq[uint64]
-    for k, v in pairs(svKmers):
+    for k, v in pairs(svKmers.counts):
         if v.refCount > maxRefCount:
             toRemove.add(k)
     for k in toRemove:
-       svKmers.del(k)
+       svKmers.counts.del(k)
     echo "after:", svKmers.len, " maxRefCount:", maxRefCount
-
 
 iterator createdChunks(fai: Fai, chunk_size: int): Chunk =
     for i in 0..<fai.len:
@@ -33,7 +32,7 @@ iterator createdChunks(fai: Fai, chunk_size: int): Chunk =
         for j in countup(0, chrom_len, step):
             yield Chunk(chrom_name: chrom_name, chrom_start: j, chrom_end: j + step)
 
-proc addRefCount(svKmers: var svIdx, full_sequence: string, kmer_size: int = 25, space = 0) =
+proc addRefCount(svKmers: var SvIndex, full_sequence: string, kmer_size: int = 25, space = 0) =
     ## Use spaced-seeds if space > 0. (Try 50.)
     var convertedKmers: pot_t = dna_to_kmers(full_sequence, kmer_size)
     if space > 0:
@@ -42,14 +41,14 @@ proc addRefCount(svKmers: var svIdx, full_sequence: string, kmer_size: int = 25,
     #    echo "btd:", bin_to_dna(seed.kmer, convertedKmers.word_size, seed.strand), ' ', seed.kmer
 
     for km in convertedKmers.seeds:
-      if km.kmer in svKmers:
-        svKmers[km.kmer].refCount.inc
+      if km.kmer in svKmers.counts:
+        svKmers.counts[km.kmer].refCount.inc
 
-proc updateChunk(svKmers: var svIdx, fai: Fai, chunk: Chunk, kmer_size: int, space: int) =
+proc updateChunk(svKmers: var SvIndex, fai: Fai, chunk: Chunk, kmer_size: int, space: int) =
     var sub_seq = fai.get(chunk.chrom_name, chunk.chrom_start, chunk.chrom_end)
     addRefCount(svKmers, sub_seq, kmer_size, space)
 
-proc updateSvIdx*(input_ref_fn: string, svKmers: var svIdx, kmer_size: int = 25, chunk_size: int = 1_000_000, space = 0) =
+proc updateSvIndex*(input_ref_fn: string, svKmers: var SvIndex, kmer_size: int = 25, chunk_size: int = 1_000_000, space = 0) =
     ## Walk over reference sequences and count kmers.
     ## Update any existing svIdx entries with these counts.
     ## Use spaced-seeds if space > 0. (Try 50.)

@@ -14,22 +14,22 @@ proc main_runner*(variants_fn, refSeq_fn, reads_fn: string, prefix = "test", kme
     ## If a file called "{prefix}.sv_kmers.msgpack" exists, use it.
     ## Otherwise, generate it.
     var index_fn = "{prefix}.sv_kmers.msgpck".fmt
-    var idx: svIdx
+    var idx: SvIndex
 
     if not os.existsFile(index_fn):
         echo "building an SV kmer DB."
-        idx = buildSVIdx(refSeq_fn, variants_fn, flank, kmer_size)
+        idx = buildSvIndex(refSeq_fn, variants_fn, flank, kmer_size)
         let sp = if spaced_seeds:
           space
         else:
           0
         echo "updating reference kmer counts."
-        updateSvIdx(refSeq_fn, idx, kmer_size, 1000000, sp)
-        echo "dumpIdxToFile:'", index_fn, "'"
-        dumpIdxToFile(idx, index_fn)
+        updateSvIndex(refSeq_fn, idx, kmer_size, 1000000, sp)
+        echo "dumpIndexToFile:'", index_fn, "'"
+        dumpIndexToFile(idx, index_fn)
     else:
-        echo "loadIdxFromFile:'", index_fn, "'"
-        idx = loadIdxFromFile(index_fn)
+        echo "loadIndexFromFile:'", index_fn, "'"
+        idx = loadIndexFromFile(index_fn, kmer_size)
 
     echo "final idx contains: {idx.len} forward and reverse SV kmers.".fmt
 

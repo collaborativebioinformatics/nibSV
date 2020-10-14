@@ -8,7 +8,7 @@ type Read* = object
     ## key of svid, count of supporting kmers
     compatible_SVs*: CountTable[uint32]
 
-proc process_read*(s: string, idx: svIdx, k: int = 25, spacedSeeds: bool = false, space: int = 50): Read =
+proc process_read*(s: string, idx: SvIndex, k: int = 25, spacedSeeds: bool = false, space: int = 50): Read =
     # find SVs with kmers intersecting with those from this read.
     var x: Read
     var kmers = Dna(s).dna_to_kmers(k)
