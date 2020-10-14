@@ -22,14 +22,15 @@ proc buildSVIdx*(reference_path: string, vcf_path: string, flank: int = 100, k: 
   var variants: VCF
   doAssert(open(variants, vcf_path))
 
-  var sv_type: string
   var sv_idx = 0
+  echo "flank:", flank
   for v in variants:
-    doAssert v.info.get("SVTYPE", svtype) == Status.OK
     let sv_chrom = $v.CHROM
 
     let flanks = fai.retrieve_flanking_sequences_from_fai($v.CHROM, v.start.int, v.stop.int, flank)
-    for s in [flanks.left, flanks.right]:
-      result.insert(s, k, sv_idx)
+    var p = v.compose(flanks.left, flanks.right, k)
+
+    result.insert(p.sequences.alt_seq, k, sv_idx)
+    result.insert(p.sequences.ref_seq, k, -1)
 
     sv_idx.inc

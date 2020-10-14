@@ -11,6 +11,14 @@ proc report*(vcf_name : string, sv_read_supports : CountTableRef[uint32], sv_ind
     ## the SV is present in the sample (i.e., SV support count > 1)
     var variants:VCF
     doAssert open(variants, vcf_name)
+    echo "report"
+
+    var sv_to_kmer = initTable[uint32, seq[uint64]]()
+    for kmer, support in sv_index:
+      for sv in support.svs:
+        var a = sv_to_kmer.getOrDefault(sv)
+        a.add(kmer)
+        sv_to_kmer[sv] = a
 
     var outputVCF:VCF
     doAssert open(outputVCF, "output.vcf", "w")
@@ -29,10 +37,11 @@ proc report*(vcf_name : string, sv_read_supports : CountTableRef[uint32], sv_ind
     for v in variants:
         var sv_support_count = sv_read_supports.getOrDefault(sv_id, -1)
         var sv_ref_k_count = 0
-        var sv_alt_k_count = 0 
+        var sv_alt_k_count = 0
         if sv_id in sv_index:
-            sv_ref_k_count = sv_index[sv_id].refCount.int
-            sv_alt_k_count = sv_index[sv_id].altCount.int
+            for km in sv_to_kmer.getOrDefault(sv_id):
+              sv_ref_k_count += sv_index[km].refCount.int
+              sv_alt_k_count += sv_index[km].altCount.int
         doAssert v.info.set("NIB_SV_REF_KMERIDX_COUNT", sv_ref_k_count) == Status.OK
         doAssert v.info.set("NIB_SV_ALT_KMERIDX_COUNT", sv_alt_k_count) == Status.OK
         if sv_support_count > 0:

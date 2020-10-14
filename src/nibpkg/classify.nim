@@ -13,6 +13,9 @@ proc classify_bam(filename: string, idx: svIdx, k: int = 25, spacedSeeds: bool =
     var sequence: string
 
     for record in bamfile:
+        # NOTE: we may also want to filter record.flag.dup in the future, but
+        # that will make results differ between bam and fastq
+        if record.flag.secondary or record.flag.supplementary: continue
         record.sequence(sequence)
 
         var read_classification = process_read(sequence, idx, k, spacedSeeds, space)
