@@ -29,7 +29,7 @@ proc main_runner*(variants_fn, refSeq_fn, reads_fn: string, prefix = "test", kme
         dumpIndexToFile(idx, index_fn)
     else:
         echo "loadIndexFromFile:'", index_fn, "'"
-        idx = loadIndexFromFile(index_fn)
+        idx = loadIndexFromFile(index_fn, kmer_size)
 
     echo "final idx contains: {idx.len} forward and reverse SV kmers.".fmt
 

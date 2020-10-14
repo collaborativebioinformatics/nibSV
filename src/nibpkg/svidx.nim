@@ -1,7 +1,7 @@
 # vim: sw=4 ts=4 sts=4 tw=0 et:
 import tables
-#export tables
 from strutils import nil
+from strformat import fmt
 import msgpack4nim, streams, json
 import ./kmers
 
@@ -26,10 +26,13 @@ proc dumpIndexToFile*(idx: SvIndex, fn: string) =
     strm.pack(idx)
     strm.close()
 
-proc loadIndexFromFile*(fn: string): SvIndex =
+proc loadIndexFromFile*(fn: string, kmerSize: int): SvIndex =
     let strm = openFileStream(fn, fmRead)
     strm.unpack(result)
     strm.close()
+    if kmerSize != result.kmerSize.int:
+        echo "ERROR: Inconsistent SvIndex file '{fn}'\nkmerSize={kmerSize} != SvIndex.kmerSize={result.kmerSize}".fmt
+        doAssert(kmerSize == result.kmerSize.int)
 
 proc `%`(idx: SvIndex): JsonNode =
     result = json.newJObject()
@@ -54,7 +57,8 @@ proc loadIndexFromJson*(js: string): SvIndex =
 
 proc insert*(idx: var SvIndex, sequence: string, k: int, sv_idx: int = -1) =
     ## when inserting reference sequences leave sv_idx as -1
-    var l = Dna(sequence).dna_to_kmers(k)
+    #doAssert(k == idx.kmerSize.int);
+    var l = Dna(sequence).dna_to_kmers(k.int)
 
     # inserting alternates
     if sv_idx >= 0:
