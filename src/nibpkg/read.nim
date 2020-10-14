@@ -31,9 +31,10 @@ proc filter_read_matches*(read: var Read, min_matches: int = 2, winner_takes_all
         if kcnt > max_kcnt.int:
             max_sv = sv.int
             max_kcnt = kcnt.uint32
-    for r in removables:
-        read.compatible_SVs.del(r)
 
     if winner_takes_all:
         clear(read.compatible_SVs)
         read.compatible_SVs.inc(max_sv.uint32, max_kcnt.int)
+    else:
+        for r in removables:
+            read.compatible_SVs.del(r)
