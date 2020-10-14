@@ -81,10 +81,12 @@ suite "refmers":
     # foo.fasta contains "GATTACA", which matches 2 3-mers from our index:
     #  "ACA" (==4 forward)
     #  "ATT" (==3 reversed)
-    let
+    var
       fn = "foo.fasta"
       kmer_size = 3
       space = 0
+    if not fileExists(fn):
+      fn = "tests/foo.fasta"
     refmers.updateSvIdx(fn, idx, kmer_size, 0, space=space)
     #echo "result:", svidx.dumpIdxtoJson(idx)
     var result = svidx.dumpIdxtoJson(idx)
@@ -95,10 +97,12 @@ suite "refmers":
     # foo.fasta contains "GATTACA", which matches 2 3-mers:
     #  "GATACA" (==2244 forward)
     #  "GATACA" (==3789 reversed)
-    let
+    var
       fn = "foo.fasta"
       kmer_size = 3
       space = 1
+    if not fileExists(fn):
+      fn = "tests/foo.fasta"
     refmers.updateSvIdx(fn, idx, kmer_size, 0, space=space)
     #echo "result:", svidx.dumpIdxtoJson(idx)
     var result = svidx.dumpIdxtoJson(idx)
