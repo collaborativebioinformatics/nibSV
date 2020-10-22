@@ -5,12 +5,10 @@ import tables
 import msgpack4nim, streams
 import ./svidx
 
-var empty: seq[uint32]
 
-proc lookupKmer*(idx: SvIndex, kmer: seed_t): seq[uint32] {.noInit.} =
-  if kmer.kmer in idx.counts:
-    return idx.counts[kmer.kmer].svs
-  return empty
+
+
+#TODO can we move all this code into svidx, does that make sense?
 
 proc buildSvIndex*(reference_path: string, vcf_path: string, flank: int = 100, k: int = 25): SvIndex =
   ## Open FASTA index
@@ -31,6 +29,9 @@ proc buildSvIndex*(reference_path: string, vcf_path: string, flank: int = 100, k
     var p = v.compose(flanks.left, flanks.right, k)
 
     result.insert(p.sequences.alt_seq, k, sv_idx)
-    result.insert(p.sequences.ref_seq, k, -1)
+    # The insert function allows us to add to the ref count, but refmer also
+    #  adds the same counts, so for now i'm commenting this out to minimize the
+    #  lines of code we are debugging. --Zev
+    # result.insert(p.sequences.ref_seq, k, -1)
 
     sv_idx.inc

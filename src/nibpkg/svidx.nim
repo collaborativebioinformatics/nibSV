@@ -21,6 +21,15 @@ type
 proc len*(idx: SvIndex): int =
     return idx.counts.len
 
+
+#Cost savings on allocations?
+var empty: seq[uint32]
+
+proc lookupKmer*(idx: SvIndex, kmer: seed_t): seq[uint32] {.noInit.} =
+    if kmer.kmer in idx.counts:
+        return idx.counts[kmer.kmer].svs
+    return empty
+
 proc dumpIndexToFile*(idx: SvIndex, fn: string) =
     let strm = openFileStream(fn, fmWrite)
     strm.pack(idx)
@@ -38,8 +47,8 @@ proc `%`(idx: SvIndex): JsonNode =
     result = json.newJObject()
     result["kmerSize"] = %idx.kmerSize
     result["counts"] = json.newJObject()
-    for k,v in idx.counts.pairs():
-        let val = SvValue(refCount:v.refCount, altCount:v.altCount, svs:v.svs)
+    for k, v in idx.counts.pairs():
+        let val = SvValue(refCount: v.refCount, altCount: v.altCount, svs: v.svs)
         result["counts"][$k] = %val
 
 proc dumpIndexToJson*(idx: SvIndex): string =
@@ -50,8 +59,8 @@ proc loadIndexFromJson*(js: string): SvIndex =
     ## switched from tuple to object.
     let j = json.parseJson(js)
     result.kmerSize = j["kmerSize"].getInt().uint8
-    for key,val in j["counts"]:
-        let k:uint64 = strutils.parseBiggestUint(key)
+    for key, val in j["counts"]:
+        let k: uint64 = strutils.parseBiggestUint(key)
         let v = json.to(val, SvValue)
         result.counts[k] = v
 
@@ -75,3 +84,14 @@ proc insert*(idx: var SvIndex, sequence: string, k: int, sv_idx: int = -1) =
         # note: sometimes doing double lookup.
         if kmer.kmer notin idx.counts: continue
         idx.counts[kmer.kmer].refCount.inc
+
+proc filterRefKmers*(svKmers: var SvIndex, maxRefCount: uint32) =
+    ## Remove entries in the SV index that have a ref count higher than specified
+    echo "before:", svKmers.len, " maxRefCount:", maxRefCount
+    var toRemove: seq[uint64]
+    for k, v in pairs(svKmers.counts):
+        if v.refCount > maxRefCount:
+            toRemove.add(k)
+    for k in toRemove:
+        svKmers.counts.del(k)
+    echo "after:", svKmers.len, " maxRefCount:", maxRefCount
