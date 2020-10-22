@@ -10,23 +10,13 @@ type
         chrom_start: int
         chrom_end: int
 
-proc filterRefKmers*(svKmers: var SvIndex, maxRefCount : uint32 ) =
-    ## Remove entries in the SV index that have a ref count higher than specified
-    echo "before:", svKmers.len, " maxRefCount:", maxRefCount
-    var toRemove : seq[uint64]
-    for k, v in pairs(svKmers.counts):
-        if v.refCount > maxRefCount:
-            toRemove.add(k)
-    for k in toRemove:
-       svKmers.counts.del(k)
-    echo "after:", svKmers.len, " maxRefCount:", maxRefCount
 
 iterator createdChunks(fai: Fai, chunk_size: int): Chunk =
     for i in 0..<fai.len:
         let chrom_name = fai[i]
         let chrom_len = fai.chrom_len(chrom_name)
         let step = if chunk_size <= 0:
-            chrom_len  # typically small in this case
+            chrom_len # typically small in this case
         else:
             chunk_size
         for j in countup(0, chrom_len, step):
@@ -41,8 +31,8 @@ proc addRefCount(svKmers: var SvIndex, full_sequence: string, kmer_size: int = 2
     #    echo "btd:", bin_to_dna(seed.kmer, convertedKmers.word_size, seed.strand), ' ', seed.kmer
 
     for km in convertedKmers.seeds:
-      if km.kmer in svKmers.counts:
-        svKmers.counts[km.kmer].refCount.inc
+        if km.kmer in svKmers.counts:
+            svKmers.counts[km.kmer].refCount.inc
 
 proc updateChunk(svKmers: var SvIndex, fai: Fai, chunk: Chunk, kmer_size: int, space: int) =
     var sub_seq = fai.get(chunk.chrom_name, chunk.chrom_start, chunk.chrom_end)
@@ -61,20 +51,20 @@ proc updateSvIndex*(input_ref_fn: string, svKmers: var SvIndex, kmer_size: int =
         updateChunk(svKmers, fai, i, kmer_size, space)
 
 when isMainModule:
-  import hts
-  var fai:Fai
-  import times
+    import hts
+    var fai: Fai
+    import times
 
-  if not fai.open("/data/human/g1k_v37_decoy.fa"):
-    quit "bad"
+    if not fai.open("/data/human/g1k_v37_decoy.fa"):
+        quit "bad"
 
-  var s = fai.get("22")
-  var svkmers:svIdx
-  new(svkmers)
-  echo "starting"
-  for i in countup(0, 100_000_000, 10):
-    svkmers[i.uint64] = (0'u32, 0'u32, newSeq[uint32]())
+    var s = fai.get("22")
+    var svkmers: svIdx
+    new(svkmers)
+    echo "starting"
+    for i in countup(0, 100_000_000, 10):
+        svkmers[i.uint64] = (0'u32, 0'u32, newSeq[uint32]())
 
-  var t0 = cpuTime()
-  svKmers.addRefCount(s)
-  echo "time:", cpuTime() - t0
+    var t0 = cpuTime()
+    svKmers.addRefCount(s)
+    echo "time:", cpuTime() - t0
