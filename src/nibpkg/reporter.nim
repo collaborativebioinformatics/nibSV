@@ -14,11 +14,14 @@ proc report*(vcf_name : string, sv_read_supports : CountTableRef[uint32], sv_ind
     echo "Writing report to output.vcf"
 
     var sv_to_kmer = initTable[uint32, seq[uint64]]()
+    echo "sv_index.counts: {sv_index.counts.len}".fmt
     for kmer, support in sv_index.counts:
+      doAssert(support.svs.len != 0)
       for svId in support.svs:
         var a = sv_to_kmer.getOrDefault(svId)
         a.add(kmer)
         sv_to_kmer[svId] = a
+        echo a
 
     var outputVCF:VCF
     doAssert open(outputVCF, "output.vcf", "w")
