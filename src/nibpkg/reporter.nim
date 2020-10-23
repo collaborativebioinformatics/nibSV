@@ -1,6 +1,7 @@
 import tables
 import hts
 import svidx
+import strformat
 
 
 ## N.B.: Add a function that takes a BAM path and returns the sample name
@@ -21,7 +22,6 @@ proc report*(vcf_name : string, sv_read_supports : CountTableRef[uint32], sv_ind
         var a = sv_to_kmer.getOrDefault(svId)
         a.add(kmer)
         sv_to_kmer[svId] = a
-        echo a
 
     var outputVCF:VCF
     doAssert open(outputVCF, "output.vcf", "w")
