@@ -4,7 +4,7 @@ import svidx
 
 
 ## N.B.: Add a function that takes a BAM path and returns the sample name
-## 
+##
 ## TODO: Add a function that handles genotypes using the svIdx's ref/alt count fields.
 proc report*(vcf_name : string, sv_read_supports : CountTableRef[uint32], sv_index : SvIndex, sample_name : string="SAMPLE") =
     ## Query SV supports for each SV in a VCF, appending the sample name to a field in the INFO fileds if
@@ -15,10 +15,10 @@ proc report*(vcf_name : string, sv_read_supports : CountTableRef[uint32], sv_ind
 
     var sv_to_kmer = initTable[uint32, seq[uint64]]()
     for kmer, support in sv_index.counts:
-      for sv in support.svs:
-        var a = sv_to_kmer.getOrDefault(sv)
+      for svId in support.svs:
+        var a = sv_to_kmer.getOrDefault(svId)
         a.add(kmer)
-        sv_to_kmer[sv] = a
+        sv_to_kmer[svId] = a
 
     var outputVCF:VCF
     doAssert open(outputVCF, "output.vcf", "w")
@@ -52,6 +52,6 @@ proc report*(vcf_name : string, sv_read_supports : CountTableRef[uint32], sv_ind
         doAssert outputVCF.write_variant(v)
 
         sv_id.inc
-    
+
     close(outputVCF)
     close(variants)

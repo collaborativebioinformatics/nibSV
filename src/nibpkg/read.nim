@@ -10,15 +10,14 @@ type Read* = object
 
 proc process_read*(s: string, idx: SvIndex, k: int = 25, spacedSeeds: bool = false, space: int = 50): Read =
     # find SVs with kmers intersecting with those from this read.
-    var x: Read
     var kmers = Dna(s).dna_to_kmers(k)
     if(spacedSeeds):
         kmers = spacing_kmer(kmers, space)
     for kmer in kmers.seeds:
         var matching_svs = idx.lookupKmer(kmer)
-        for c in matching_svs:
-            x.compatible_SVs.inc(c)
-    return x
+        for svId in matching_svs:
+            result.compatible_SVs.inc(svId)
+
 
 proc filter_read_matches*(read: var Read, min_matches: int = 2, winner_takes_all: bool = false) =
     ## track sv with most kmer matches
