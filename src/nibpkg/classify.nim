@@ -20,8 +20,8 @@ proc classify_bam(filename: string, idx: SvIndex, k: int = 25, spacedSeeds: bool
 
         var read_classification = process_read(sequence, idx, k, spacedSeeds, space)
         filter_read_matches(read_classification, winner_takes_all=false)
-        for key, val in read_classification.compatible_SVs:
-            result.inc(key)
+        for svId, count in read_classification.compatible_SVs:
+            result.inc(svId)
 
 
 proc classify_file*(filename: string, idx: SvIndex, k: int = 25, spacedSeeds: bool = false, space: int = 50): CountTableRef[uint32] =
