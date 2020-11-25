@@ -1,6 +1,6 @@
   1. testNib_seq_N.fa: Reference sequence (10kbp region of human genome)
   
-  2. outN.fasta: Simulated SV (generated using SURVIVOR)
+  2. outN.fasta and outN.vcf: Simulated SV (generated using SURVIVOR)
   
   3. outN.fasta_x.fasta: simulated paired-end illumina reads of outN.fasta (using mason)
   
