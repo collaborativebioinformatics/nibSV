@@ -11,6 +11,7 @@ type
         refCount*: uint32
         altCount*: uint32
         svs*: seq[uint32]
+        dna*: string
 
     ## A map from KMER ID -> (number of time kmer appears in a ref seq, number of times kmer appears in an alt seq, list(SVs) that kmer is contained in )
     #svIdx* = TableRef[uint64, SvValue]
@@ -48,7 +49,7 @@ proc `%`(idx: SvIndex): JsonNode =
     result["kmerSize"] = %idx.kmerSize
     result["counts"] = json.newJObject()
     for k, v in idx.counts.pairs():
-        let val = SvValue(refCount: v.refCount, altCount: v.altCount, svs: v.svs)
+        let val = SvValue(refCount: v.refCount, altCount: v.altCount, svs: v.svs, dna: v.dna)
         result["counts"][$k] = %val
 
 proc dumpIndexToJson*(idx: SvIndex): string =
@@ -74,9 +75,9 @@ proc insert*(idx: var SvIndex, sequence: string, k: int, sv_idx: int = -1) =
         for kmer in l.seeds:
             var kc = idx.counts.getOrDefault(kmer.kmer)
             kc.altCount.inc
+            kc.dna = $bin_to_dna( uint64(kmer.kmer), uint8(k))
             kc.svs.add(sv_idx.uint32)
             idx.counts[kmer.kmer] = kc
-
         return
 
     # inserting reference counts iff the kmer was already found as alternate.

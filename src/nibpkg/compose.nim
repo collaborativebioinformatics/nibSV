@@ -71,6 +71,9 @@ proc compose_variants*(variant_file: string, reference_file: string): seq[
 
 
   for v in variants:
+    var variant_type: string
+    if v.info.get("SVTYPE", variant_type) != Status.OK:
+        continue
     let sv_chrom = $v.CHROM
     ## Retrieve flanks, either from FAI or string cache
     let flanks = retrieve_flanking_sequences_from_fai(fai, sv_chrom, int(
