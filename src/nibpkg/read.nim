@@ -22,18 +22,18 @@ proc process_read*(s: string, idx: SvIndex, k: int = 25, spacedSeeds: bool = fal
 proc filter_read_matches*(read: var Read, min_matches: int = 2, winner_takes_all: bool = false) =
     ## track sv with most kmer matches
     var removables: seq[uint32]
-    var max_sv = 0
-    var max_kcnt = 0'u32
+    var max_sv = int.high
+    var max_kcnt = 0
     for sv, kcnt in read.compatible_SVs:
         if kcnt < min_matches:
             removables.add(sv)
-        if kcnt > max_kcnt.int:
+        if kcnt > max_kcnt:
             max_sv = sv.int
-            max_kcnt = kcnt.uint32
+            max_kcnt = kcnt
 
     if winner_takes_all:
         clear(read.compatible_SVs)
-        read.compatible_SVs.inc(max_sv.uint32, max_kcnt.int)
+        read.compatible_SVs.inc(max_sv.uint32, max_kcnt)
     else:
         for r in removables:
             read.compatible_SVs.del(r)
