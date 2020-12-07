@@ -6,6 +6,7 @@ import strformat
 import mainLookup
 import classify
 import reporter
+#from ./read import `$`
 from os import nil
 from tables import len
 
@@ -33,9 +34,18 @@ proc main_runner*(variants_fn, refSeq_fn, reads_fn: string, prefix = "test", kme
 
     echo "final idx contains: {idx.len} forward and reverse SV kmers.".fmt
 
+
     filterRefKmers(idx, maxRefKmerCount)
 
+
+    #echo dumpIndexToJson(idx)
+
+
     let classifyCount = classify_file(reads_fn, idx, kmer_size, spaced_seeds, space)
+
+    #echo "classifyCount:"
+    #echo classifyCount
+
 
     echo "reporting variants."
 
