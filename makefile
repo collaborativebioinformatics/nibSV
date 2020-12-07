@@ -4,6 +4,7 @@
 
 build:
 	nim c src/nibsv.nim
+	install_name_tool -add_rpath /opt/local/lib src/nibsv
 release:
 	nim c -d:release -d:danger src/nibsv.nim
 all:
