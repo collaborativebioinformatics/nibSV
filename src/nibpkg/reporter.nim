@@ -14,16 +14,12 @@ proc report*(vcf_name : string, sv_read_supports : CountTableRef[uint32], sv_ind
     echo "Writing report to output.vcf"
 
     var sv_to_kmer = initTable[uint32, seq[uint64]]()
-    #echo "sv_index.counts: {sv_index.counts.len}".fmt
     for kmer, support in sv_index.counts:
       doAssert(support.svs.len != 0)
       for svId in support.svs:
         var a = sv_to_kmer.getOrDefault(svId)
         a.add(kmer)
         sv_to_kmer[svId] = a
-        #echo a
-    echo "sv to kmer:"
-    echo sv_to_kmer
 
     var outputVCF:VCF
     doAssert open(outputVCF, "output.vcf", "w")
@@ -43,16 +39,10 @@ proc report*(vcf_name : string, sv_read_supports : CountTableRef[uint32], sv_ind
         var sv_support_count = sv_read_supports.getOrDefault(sv_id, -1)
         var sv_ref_k_count = 0
         var sv_alt_k_count = 0
-        # if sv_id in sv_index.counts:
-        #
-        #echo sv_id, " num kmers ", sv_to_kmer.getOrDefault(sv_id).len
         for km in sv_to_kmer.getOrDefault(sv_id):
-            #echo "SVINFO: "
-            #echo sv_id , " ", km, "refCount: ", sv_ref_k_count, " altCount: ", sv_alt_k_count
             sv_ref_k_count += sv_index.counts[km].refCount.int
             sv_alt_k_count += sv_index.counts[km].altCount.int
 
-        #echo "FINAL", "refCount: ", sv_ref_k_count, " altCount: ", sv_alt_k_count
         doAssert v.info.set("NIB_SV_REF_KMERIDX_COUNT", sv_ref_k_count) == Status.OK
         doAssert v.info.set("NIB_SV_ALT_KMERIDX_COUNT", sv_alt_k_count) == Status.OK
         if sv_support_count > 0:
