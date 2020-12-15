@@ -21,7 +21,7 @@ proc retrieve_flanking_sequences_from_fai*(fastaIdx: Fai, chrom: string,
 proc kmerize(s: string, k: int = 25): seq[seed_t] =
   return Dna(s).dna_to_kmers(k).seeds
 
-proc compose*(variant: Variant, left_flank: string,
+proc composePositioned*(variant: Variant, left_flank: string,
     right_flank: string, k: int = 25): PositionedSequence =
   ## Takes in a VCF variant, the 5' and 3' reference flanking sequences,
   ## and a kmer size. Produces a PositionedSequence, which holds the ref/alt
@@ -80,7 +80,7 @@ proc compose_variants*(variant_file: string, reference_file: string): seq[
         v.start), int(v.stop), 100)
     ## Generate a single sequence from variant seq + flank,
     ## taking into account the variant type.
-    var variant_seq = compose(v, flanks.left, flanks.right)
+    var variant_seq = composePositioned(v, flanks.left, flanks.right)
     composed_seqs.add(variant_seq)
 
   return composed_seqs

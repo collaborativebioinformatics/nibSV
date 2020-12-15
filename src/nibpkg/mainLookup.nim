@@ -1,5 +1,5 @@
 import hts
-import ./compose
+from ./compose import nil
 import ./svidx
 
 #TODO can we move all this code into svidx, does that make sense?
@@ -19,8 +19,8 @@ proc buildSvIndex*(reference_path: string, vcf_path: string, flank: int = 100, k
   for v in variants:
     let sv_chrom = $v.CHROM
 
-    let flanks = fai.retrieve_flanking_sequences_from_fai($v.CHROM, v.start.int, v.stop.int, flank)
-    var p = v.compose(flanks.left, flanks.right, k)
+    let flanks = compose.retrieve_flanking_sequences_from_fai(fai, $v.CHROM, v.start.int, v.stop.int, flank)
+    var p = compose.composePositioned(v, flanks.left, flanks.right, k)
 
     result.insert(p.sequences.alt_seq, k, sv_idx)
     # The insert function allows us to add to the ref count, but refmer also
