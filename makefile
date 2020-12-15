@@ -1,9 +1,16 @@
 #NIMBLE_DIR?=${CURDIR}/nimbleDir
 #export NIMBLE_DIR
 # Alternatively, use --nimbleDir:${NIMBLE_DIR} everywhere
+UNAME=$(shell uname)
+ifeq (${UNAME},Darwin)
+	install=install_name_tool -add_rpath /opt/local/lib
+else
+	install=echo
+endif
 
 build:
 	nim c src/nibsv.nim
+	${install} src/nibsv
 release:
 	nim c -d:release -d:danger src/nibsv.nim
 all:
