@@ -1,12 +1,6 @@
 import hts
-import ./kmers
 import ./compose
-import tables
-import msgpack4nim, streams
 import ./svidx
-
-
-
 
 #TODO can we move all this code into svidx, does that make sense?
 

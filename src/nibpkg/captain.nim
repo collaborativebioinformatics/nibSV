@@ -1,5 +1,4 @@
 # vim: sw=4 ts=4 sts=4 tw=0 et:
-import compose
 import refmers
 import svidx
 import strformat
@@ -17,7 +16,7 @@ proc main_runner*(variants_fn, refSeq_fn, reads_fn: string, prefix = "test", kme
     var index_fn = "{prefix}.sv_kmers.msgpck".fmt
     var idx: SvIndex
 
-    if not os.existsFile(index_fn):
+    if not os.fileExists(index_fn):
         echo "building an SV kmer DB."
         idx = buildSvIndex(refSeq_fn, variants_fn, flank, kmer_size)
         let sp = if spaced_seeds:

@@ -1,5 +1,4 @@
 import ./kmers
-import ./mainLookup
 import tables
 export tables
 import ./svidx
