@@ -2,7 +2,6 @@
 import refmers
 import svidx
 import strformat
-import mainLookup
 import classify
 import reporter
 #from ./read import `$`
