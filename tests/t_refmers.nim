@@ -16,13 +16,15 @@ let original = """
       "refCount": 0,
       "altCount": 0,
       "svs": [
-      ]
+      ],
+      "dna" : "A",
     },
     "4": {
       "refCount": 0,
       "altCount": 0,
       "svs": [
-      ]
+      ],
+      "dna" : "A",
     }
   }
 }
@@ -39,13 +41,15 @@ let expected = """
       "refCount": 1,
       "altCount": 0,
       "svs": [
-      ]
+      ],
+      "dna" : "A",
     },
     "4": {
       "refCount": 1,
       "altCount": 0,
       "svs": [
-      ]
+      ],
+      "dna" : "A",
     }
   }
 }
@@ -60,13 +64,15 @@ let original_spaced = """
       "refCount": 0,
       "altCount": 0,
       "svs": [
-      ]
+      ],
+      "dna" : "A",
     },
     "3789": {
       "refCount": 0,
       "altCount": 0,
       "svs": [
-      ]
+      ],
+      "dna" : "A",
     }
   }
 }
@@ -80,13 +86,15 @@ let expected_spaced = """
       "refCount": 1,
       "altCount": 0,
       "svs": [
-      ]
+      ],
+      "dna" : "A",
     },
     "3789": {
       "refCount": 1,
       "altCount": 0,
       "svs": [
-      ]
+      ],
+      "dna" : "A",
     }
   }
 }
