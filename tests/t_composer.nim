@@ -14,7 +14,7 @@ suite "compose suite":
     for v in variants:
       var variant_type: string
       doAssert v.info.get("SVTYPE", variant_type) == Status.OK
-      var variant_seq = compose(v, "AAAAA", "TTTTT")
+      var variant_seq = composePositioned(v, "AAAAA", "TTTTT")
       if variant_type == "DEL":
         check(variant_seq.sequences.alt_seq == "AAAAATTTTT")
       if variant_type == "INS":
