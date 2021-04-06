@@ -18,14 +18,14 @@ proc retrieve_flanking_sequences_from_fai*(fastaIdx: Fai, chrom: string,
   result.left = fastaIdx.get(chrom, max(0, start_pos - flank), start_pos)
   result.right = fastaIdx.get(chrom, end_pos, end_pos + flank)
 
-proc kmerize(s: string, k: int = 25, spaced_seeds : bool = false, space: int = 50): seq[seed_t] =
+proc kmerize(s: string, k: int = 25, space: int = 0): seq[seed_t] =
   var kmers =  Dna(s).dna_to_kmers(k)
-  if spaced_seeds:
+  if space > 0:
       kmers = spacing_kmer(kmers, space)
   return kmers.seeds
 
 proc composePositioned*(variant: Variant, left_flank: string,
-    right_flank: string, k: int = 25 ; spaced_seeds : bool = false ; space: int = 50): PositionedSequence =
+    right_flank: string, k: int = 25 ; space: int = 0): PositionedSequence =
   ## Takes in a VCF variant, the 5' and 3' reference flanking sequences,
   ## and a kmer size. Produces a PositionedSequence, which holds the ref/alt
   ## sequences as well as the kmers of those sequences (in addition to
@@ -37,16 +37,16 @@ proc composePositioned*(variant: Variant, left_flank: string,
     result.sequences.ref_seq = left_flank & deleted_bases & right_flank
     result.sequences.alt_seq = left_flank & right_flank
     if k > 0:
-      result.kmers.ref_kmers = kmerize(result.sequences.ref_seq, k, spaced_seeds, space)
-      result.kmers.alt_kmers = kmerize(result.sequences.alt_seq, k, spaced_seeds, space)
+      result.kmers.ref_kmers = kmerize(result.sequences.ref_seq, k, space)
+      result.kmers.alt_kmers = kmerize(result.sequences.alt_seq, k, space)
   elif variant_type == "INS":
     # the first base in the alt string is ref (silly VCF format). ^1 prevents going off the end of the seq (which ^0 did)
     var inserted_seq: string = variant.ALT[0][1 .. ^1] ## Chop the reference base prefix in the ALT allele.
     result.sequences.ref_seq = left_flank & right_flank
     result.sequences.alt_seq = left_flank & inserted_seq & right_flank
     if k > 0:
-      result.kmers.ref_kmers = kmerize(result.sequences.ref_seq, k, spaced_seeds, space)
-      result.kmers.alt_kmers = kmerize(result.sequences.alt_seq, k, spaced_seeds, space)
+      result.kmers.ref_kmers = kmerize(result.sequences.ref_seq, k, space)
+      result.kmers.alt_kmers = kmerize(result.sequences.alt_seq, k, space)
   elif variant_type == "INV":
     return
     #raise newException(ValueError,
@@ -56,7 +56,7 @@ proc composePositioned*(variant: Variant, left_flank: string,
   result.chrom = $variant.CHROM
 
 
-proc compose_variants*(variant_file: string, reference_file: string; k: int = 31, spaced_seeds : bool = false; space: int = 50): seq[
+proc compose_variants*(variant_file: string, reference_file: string; k: int = 31, space: int = 0): seq[
     PositionedSequence] =
   ## function to compose variants from their sequence / FASTA flanking regions
   ## Returns a Sequence of strings representing the DNA sequence of the flanking
@@ -83,7 +83,7 @@ proc compose_variants*(variant_file: string, reference_file: string; k: int = 31
         v.start), int(v.stop), 100)
     ## Generate a single sequence from variant seq + flank,
     ## taking into account the variant type.
-    var variant_seq = composePositioned(v, flanks.left, flanks.right, k, spaced_seeds, space)
+    var variant_seq = composePositioned(v, flanks.left, flanks.right, k, space)
     composed_seqs.add(variant_seq)
 
   return composed_seqs
