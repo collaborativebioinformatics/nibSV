@@ -5,7 +5,7 @@ import ./read
 import ./svidx
 from ./compose import nil
 
-proc buildSvIndex*(reference_path: string, vcf_path: string, flank: int = 100, k: int = 25): SvIndex =
+proc buildSvIndex*(reference_path: string, vcf_path: string, flank: int = 100, k: int = 25, space: int = 0): SvIndex =
   ## Open FASTA index
   var fai: Fai
   doAssert fai.open(reference_path), "Failed to open FASTA file: " & reference_path
@@ -21,7 +21,7 @@ proc buildSvIndex*(reference_path: string, vcf_path: string, flank: int = 100, k
     let sv_chrom = $v.CHROM
 
     let flanks = compose.retrieve_flanking_sequences_from_fai(fai, $v.CHROM, v.start.int, v.stop.int, flank)
-    var p = compose.composePositioned(v, flanks.left, flanks.right, k)
+    var p = compose.composePositioned(v, flanks.left, flanks.right, k, space)
 
     result.insert(p.sequences.alt_seq, k, sv_idx)
     # The insert function allows us to add to the ref count, but refmer also

@@ -17,11 +17,11 @@ proc main_runner*(variants_fn, refSeq_fn, reads_fn: string, prefix = "test", kme
 
     if not os.fileExists(index_fn):
         echo "building an SV kmer DB."
-        idx = buildSvIndex(refSeq_fn, variants_fn, flank, kmer_size)
         let sp = if spaced_seeds:
           space
         else:
           0
+        idx = buildSvIndex(refSeq_fn, variants_fn, flank, kmer_size, sp)
         echo "updating reference kmer counts."
         updateSvIndex(refSeq_fn, idx, kmer_size, 1000000, sp)
         echo "dumpIndexToFile:'", index_fn, "'"
