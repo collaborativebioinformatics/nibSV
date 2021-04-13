@@ -22,7 +22,8 @@ iterator createdChunks(fai: Fai, chunk_size: int): Chunk =
         for j in countup(0, chrom_len, step):
             yield Chunk(chrom_name: chrom_name, chrom_start: j, chrom_end: j + step)
 
-proc addRefCount(svKmers: var SvIndex, full_sequence: string, kmer_size: int = 25, space = 0) =
+
+proc addRefCount(svKmers: var SvIndex, full_sequence: string, kmer_size: int = 25, space: int = 0) =
     ## Use spaced-seeds if space > 0. (Try 50.)
     var convertedKmers: pot_t = dna_to_kmers(full_sequence, kmer_size)
     if space > 0:
@@ -34,11 +35,11 @@ proc addRefCount(svKmers: var SvIndex, full_sequence: string, kmer_size: int = 2
         if km.kmer in svKmers.counts:
             svKmers.counts[km.kmer].refCount.inc
 
-proc updateChunk(svKmers: var SvIndex, fai: Fai, chunk: Chunk, kmer_size: int, space: int) =
+proc updateChunk(svKmers: var SvIndex, fai: Fai, chunk: Chunk, kmer_size: int, space: int = 0) =
     var sub_seq = fai.get(chunk.chrom_name, chunk.chrom_start, chunk.chrom_end)
     addRefCount(svKmers, sub_seq, kmer_size, space)
 
-proc updateSvIndex*(input_ref_fn: string, svKmers: var SvIndex, kmer_size: int = 25, chunk_size: int = 1_000_000, space = 0) =
+proc updateSvIndex*(input_ref_fn: string, svKmers: var SvIndex, kmer_size: int = 25, chunk_size: int = 1_000_000, space: int = 0) =
     ## Walk over reference sequences and count kmers.
     ## Update any existing svIdx entries with these counts.
     ## Use spaced-seeds if space > 0. (Try 50.)

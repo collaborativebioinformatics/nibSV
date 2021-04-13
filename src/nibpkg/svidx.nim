@@ -64,10 +64,12 @@ proc loadIndexFromJson*(js: string): SvIndex =
         let v = json.to(val, SvValue)
         result.counts[k] = v
 
-proc insert*(idx: var SvIndex, sequence: string, k: int, sv_idx: int = -1) =
+proc insert*(idx: var SvIndex, sequence: string, k: int, sv_idx: int = -1, space: int = 0) =
     ## when inserting reference sequences leave sv_idx as -1
     #doAssert(k == idx.kmerSize.int);
     var l = Dna(sequence).dna_to_kmers(k.int)
+    if space > 0:
+       l = spacing_kmer(l, space)
 
     # inserting alternates
     if sv_idx >= 0:
