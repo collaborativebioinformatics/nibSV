@@ -49,9 +49,13 @@ proc composePositioned*(variant: Variant, left_flank: string,
       result.kmers.ref_kmers = kmerize(result.sequences.ref_seq, k, space)
       result.kmers.alt_kmers = kmerize(result.sequences.alt_seq, k, space)
   elif variant_type == "INV":
-    return
-    #raise newException(ValueError,
-    #"Error: Inversion processing not implemented.")
+    var ref_seq : string = $variant.REF ## Expects "composed" variants, where alleles are present within the field.
+    var inverted_seq : string = variant.ALT[0]
+    result.sequences.ref_seq = left_flank & ref_seq & right_flank
+    result.sequences.alt_seq = left_flank & inverted_seq & right_flank
+    if k > 0:
+      result.kmers.ref_kmers = kmerize(result.sequences.ref_seq, k, space)
+      result.kmers.alt_kmers = kmerize(result.sequences.alt_seq, k, space)
 
   result.position = int32(variant.start) - int32(len(right_flank))
   result.chrom = $variant.CHROM
