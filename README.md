@@ -1,3 +1,7 @@
+
+
+# DEPRICATED! Moved to : https://github.com/fritzsedlazeck/nibSV 
+
 <img align="right" width="300" height="300" src="https://github.com/collaborativebioinformatics/nibSV/blob/main/SVNibbler.png">
 
 # NibblerSV
